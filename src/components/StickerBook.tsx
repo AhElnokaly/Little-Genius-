@@ -10,15 +10,15 @@ interface StickerBookProps {
 }
 
 export default function StickerBook({ stars, onBack }: StickerBookProps) {
-  const [placedStickers, setPlacedStickers] = useState<{id: number, emoji: string, x: number, y: number}[]>([]);
+  const [placedStickers, setPlacedStickers] = useState<{id: number, emoji: string, left: string, top: string}[]>([]);
 
   const handleAddSticker = (emoji: string) => {
     if (stars <= placedStickers.length) return;
     setPlacedStickers([...placedStickers, { 
       id: Date.now(), 
       emoji, 
-      x: Math.random() * (window.innerWidth - 100), 
-      y: Math.random() * (window.innerHeight - 300) + 150 
+      left: `${Math.random() * 60 + 15}%`, // +++ أضيف بناءً على طلبك: تحديد النسبة المئوية لضمان الظهور داخل الشاشة +++
+      top: `${Math.random() * 50 + 10}%`   // +++ أضيف بناءً على طلبك: تحديد النسبة المئوية لضمان الظهور داخل الشاشة +++
     }]);
   };
 
@@ -50,8 +50,9 @@ export default function StickerBook({ stars, onBack }: StickerBookProps) {
             key={s.id}
             drag
             dragMomentum={false}
-            initial={{ x: window.innerWidth/2 - 40, y: 100, scale: 0 }}
-            animate={{ x: s.x, y: s.y, scale: 1 }}
+            initial={{ scale: 0 }} // +++ أضيف بناءً على طلبك: إزالة الإحداثيات الثابتة +++
+            animate={{ scale: 1 }} // +++ أضيف بناءً على طلبك: إزالة الإحداثيات الثابتة +++
+            style={{ left: s.left, top: s.top }} // +++ أضيف بناءً على طلبك: استخدام النسبة المئوية +++
             className="absolute text-7xl cursor-grab active:cursor-grabbing drop-shadow-xl"
           >
             {s.emoji}
