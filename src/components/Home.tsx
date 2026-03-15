@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Settings as SettingsIcon, Image as ImageIcon } from 'lucide-react';
+import { Settings as SettingsIcon, Image as ImageIcon, Download } from 'lucide-react';
 
 interface HomeProps {
   onSelect: (id: string) => void;
@@ -8,6 +9,30 @@ interface HomeProps {
 }
 
 export default function Home({ onSelect, profileName, isBirthday }: HomeProps) {
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
+
   const categories = [
     {
       title: 'الحروف والأرقام 🔢',
@@ -48,10 +73,17 @@ export default function Home({ onSelect, profileName, isBirthday }: HomeProps) {
     <div className="w-full h-full flex flex-col items-center justify-start p-2 md:p-4 overflow-hidden relative bg-sky-50">
       {/* Top Bar */}
       <div className="w-full flex justify-between items-center px-2 pt-2 z-50">
-        <button onClick={() => onSelect('settings')} className="bg-white p-3 rounded-full shadow-md text-slate-500 hover:text-slate-700 border-2 border-slate-200 active:scale-95 transition-transform">
-          <SettingsIcon size={28} />
-        </button>
-        <button onClick={() => onSelect('stickers')} className="bg-white px-4 py-2 rounded-full shadow-md text-amber-500 flex gap-2 items-center border-2 border-amber-200 active:scale-95 transition-transform font-bold text-lg">
+        <div className="flex gap-2">
+          <button onClick={() => onSelect('settings')} className="bg-white p-3 rounded-full shadow-md text-slate-500 hover:text-slate-700 border-2 border-slate-200 active:scale-95 transition-transform">
+            <SettingsIcon size={28} />
+          </button>
+          {deferredPrompt && (
+            <button onClick={handleInstallClick} className="bg-white px-4 py-2 rounded-full shadow-md text-sky-500 flex gap-2 items-center border-2 border-sky-200 active:scale-95 transition-transform font-bold text-sm md:text-lg">
+              <Download size={24} /> تثبيت التطبيق
+            </button>
+          )}
+        </div>
+        <button onClick={() => onSelect('stickers')} className="bg-white px-4 py-2 rounded-full shadow-md text-amber-500 flex gap-2 items-center border-2 border-amber-200 active:scale-95 transition-transform font-bold text-sm md:text-lg">
           <ImageIcon size={24} /> الملصقات
         </button>
       </div>

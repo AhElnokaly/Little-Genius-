@@ -12,6 +12,13 @@ export default defineConfig(({mode}) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
+        injectRegister: 'auto',
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,json,mp3,wav}'],
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          skipWaiting: true,
+        },
         devOptions: {
           enabled: true
         },
@@ -22,11 +29,17 @@ export default defineConfig(({mode}) => {
           theme_color: '#bae6fd',
           background_color: '#bae6fd',
           display: 'standalone',
+          orientation: 'portrait',
           icons: [
             {
-              src: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>',
+              src: '/icon-192.png',
               sizes: '192x192',
-              type: 'image/svg+xml'
+              type: 'image/png'
+            },
+            {
+              src: '/icon-512.png',
+              sizes: '512x512',
+              type: 'image/png'
             }
           ]
         }
