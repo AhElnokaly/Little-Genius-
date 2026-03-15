@@ -10,12 +10,12 @@ interface AnimalFamilyProps {
 }
 
 const FAMILIES = [
-  { id: 'dog', baby: 'جرو', adult: 'كلب', babyEmoji: '🐶', adultEmoji: '🐕' },
-  { id: 'cat', baby: 'قطة صغيرة', adult: 'قطة', babyEmoji: '🐱', adultEmoji: '🐈' },
-  { id: 'chicken', baby: 'كتكوت', adult: 'دجاجة', babyEmoji: '🐥', adultEmoji: '🐔' },
-  { id: 'sheep', baby: 'حمل', adult: 'خروف', babyEmoji: '🐑', adultEmoji: '🐏' },
-  { id: 'cow', baby: 'عجل', adult: 'بقرة', babyEmoji: '🐮', adultEmoji: '🐄' },
-  { id: 'horse', baby: 'مهر', adult: 'حصان', babyEmoji: '🐴', adultEmoji: '🐎' },
+  { id: 'dog', baby: 'جرو', adult: 'كلب', babyEmoji: '🐶', adultEmoji: '🐕', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/71/Dog_bark_1.ogg' },
+  { id: 'cat', baby: 'قطة صغيرة', adult: 'قطة', babyEmoji: '🐱', adultEmoji: '🐈', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Cat_Meow_2.ogg' },
+  { id: 'chicken', baby: 'كتكوت', adult: 'دجاجة', babyEmoji: '🐥', adultEmoji: '🐔', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Rooster_crow.ogg' },
+  { id: 'sheep', baby: 'حمل', adult: 'خروف', babyEmoji: '🐑', adultEmoji: '🐏', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Sheep_bleat.ogg' },
+  { id: 'cow', baby: 'عجل', adult: 'بقرة', babyEmoji: '🐮', adultEmoji: '🐄', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d4/Cow_moo.ogg' },
+  { id: 'horse', baby: 'مهر', adult: 'حصان', babyEmoji: '🐴', adultEmoji: '🐎', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/87/Horse_whinny.ogg' },
 ];
 
 export default function AnimalFamily({ onBack, onWin }: AnimalFamilyProps) {
@@ -76,6 +76,11 @@ export default function AnimalFamily({ onBack, onWin }: AnimalFamilyProps) {
   const handleLeftClick = (item: any) => {
     if (matched.includes(item.id)) return;
     if (showTutorial) setShowTutorial(false);
+    
+    // +++ أضيف بناءً على طلبك: تشغيل صوت الحيوان الحقيقي +++
+    const audio = new Audio(item.audioUrl);
+    audio.play().catch(() => {});
+    
     speak(item.baby);
     setSelectedLeft(item.id);
     checkMatch(item.id, selectedRight);
@@ -84,6 +89,11 @@ export default function AnimalFamily({ onBack, onWin }: AnimalFamilyProps) {
   const handleRightClick = (item: any) => {
     if (matched.includes(item.id)) return;
     if (showTutorial) setShowTutorial(false);
+    
+    // +++ أضيف بناءً على طلبك: تشغيل صوت الحيوان الحقيقي +++
+    const audio = new Audio(item.audioUrl);
+    audio.play().catch(() => {});
+    
     speak(item.adult);
     setSelectedRight(item.id);
     checkMatch(selectedLeft, item.id);
