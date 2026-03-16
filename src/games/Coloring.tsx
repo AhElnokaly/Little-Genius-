@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft, Eraser, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';

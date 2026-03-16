@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -59,7 +59,7 @@ export default function ShapeSorter({ onBack, onWin }: ShapeSorterProps) {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance('ممتاز');
-      utterance.lang = 'ar-SA';
+      utterance.lang = 'ar-EG';
       window.speechSynthesis.speak(utterance);
     }
   };

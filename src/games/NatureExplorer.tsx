@@ -16,19 +16,19 @@ const NATURE_ITEMS = [
   { id: 'carrot', name: 'جزر', emoji: '🥕', type: 'vegetable', color: 'bg-orange-400' },
   { id: 'broccoli', name: 'بروكلي', emoji: '🥦', type: 'vegetable', color: 'bg-green-500' },
   { id: 'tomato', name: 'طماطم', emoji: '🍅', type: 'vegetable', color: 'bg-red-500' },
-  { id: 'corn', name: 'ذرة', emoji: '🌽', type: 'vegetable', color: 'bg-yellow-500' },
+  { id: 'corn', name: 'درة', emoji: '🌽', type: 'vegetable', color: 'bg-yellow-500' },
   { id: 'grapes', name: 'عنب', emoji: '🍇', type: 'fruit', color: 'bg-purple-400' },
   { id: 'watermelon', name: 'بطيخ', emoji: '🍉', type: 'fruit', color: 'bg-rose-400' },
   { id: 'strawberry', name: 'فراولة', emoji: '🍓', type: 'fruit', color: 'bg-red-400' },
-  { id: 'mushroom', name: 'فطر', emoji: '🍄', type: 'nature', color: 'bg-stone-400' },
-  { id: 'flower', name: 'زهرة', emoji: '🌻', type: 'nature', color: 'bg-amber-400' },
+  { id: 'mushroom', name: 'مشروم', emoji: '🍄', type: 'nature', color: 'bg-stone-400' },
+  { id: 'flower', name: 'وردة', emoji: '🌻', type: 'nature', color: 'bg-amber-400' },
   { id: 'tree', name: 'شجرة', emoji: '🌳', type: 'nature', color: 'bg-emerald-500' },
   { id: 'leaf', name: 'ورقة شجر', emoji: '🍃', type: 'nature', color: 'bg-lime-400' },
   { id: 'cactus', name: 'صبار', emoji: '🌵', type: 'nature', color: 'bg-green-600' },
   { id: 'potato', name: 'بطاطس', emoji: '🥔', type: 'vegetable', color: 'bg-amber-600' },
   { id: 'onion', name: 'بصل', emoji: '🧅', type: 'vegetable', color: 'bg-orange-300' },
-  { id: 'eggplant', name: 'باذنجان', emoji: '🍆', type: 'vegetable', color: 'bg-purple-500' },
-  { id: 'cherry', name: 'كرز', emoji: '🍒', type: 'fruit', color: 'bg-rose-500' },
+  { id: 'eggplant', name: 'بتنجان', emoji: '🍆', type: 'vegetable', color: 'bg-purple-500' },
+  { id: 'cherry', name: 'كريز', emoji: '🍒', type: 'fruit', color: 'bg-rose-500' },
   { id: 'peach', name: 'خوخ', emoji: '🍑', type: 'fruit', color: 'bg-orange-400' },
   { id: 'pineapple', name: 'أناناس', emoji: '🍍', type: 'fruit', color: 'bg-yellow-400' },
 ];
@@ -46,7 +46,7 @@ export default function NatureExplorer({ onBack, onWin }: NatureExplorerProps) {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(item.name);
-      utterance.lang = 'ar-SA';
+      utterance.lang = 'ar-EG';
       utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }

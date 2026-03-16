@@ -5,6 +5,7 @@ export interface UserProfile {
   name: string;
   dob: string;
   lockEnabled: boolean;
+  playTimeLimit?: number; // +++ أضيف بناءً على طلبك +++
 }
 
 interface SettingsProps {
@@ -17,9 +18,10 @@ export default function Settings({ profile, onSave, onBack }: SettingsProps) {
   const [name, setName] = useState(profile.name);
   const [dob, setDob] = useState(profile.dob);
   const [lockEnabled, setLockEnabled] = useState(profile.lockEnabled);
+  const [playTimeLimit, setPlayTimeLimit] = useState(profile.playTimeLimit || 0); // +++ أضيف بناءً على طلبك +++
 
   const handleSave = () => {
-    onSave({ name, dob, lockEnabled });
+    onSave({ name, dob, lockEnabled, playTimeLimit }); // +++ أضيف بناءً على طلبك +++
     onBack();
   };
 
@@ -59,6 +61,20 @@ export default function Settings({ profile, onSave, onBack }: SettingsProps) {
             >
               <div className={`w-6 h-6 bg-white rounded-full shadow-md transition-transform ${lockEnabled ? 'translate-x-[-32px]' : ''}`} />
             </button>
+          </div>
+          {/* +++ أضيف بناءً على طلبك: إعداد وقت اللعب +++ */}
+          <div className="bg-slate-50 border-2 border-slate-200 p-4 rounded-2xl">
+            <label className="block text-lg font-bold text-slate-700 mb-2">وقت اللعب المسموح (بالدقائق)</label>
+            <p className="text-sm text-slate-500 mb-4">ضع 0 لإلغاء التايمر</p>
+            <input 
+              type="number" 
+              min="0"
+              max="120"
+              value={playTimeLimit} 
+              onChange={e => setPlayTimeLimit(Number(e.target.value))} 
+              className="w-full p-4 rounded-2xl border-2 border-slate-200 focus:border-sky-400 outline-none text-lg font-medium bg-white text-left" 
+              dir="ltr"
+            />
           </div>
           <button 
             onClick={handleSave} 

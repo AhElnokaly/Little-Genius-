@@ -14,31 +14,31 @@ const ARABIC_LETTERS = [
   { letter: 'أ', word: 'أرنب', emoji: '🐰', color: 'bg-red-400' },
   { letter: 'ب', word: 'بطة', emoji: '🦆', color: 'bg-orange-400' },
   { letter: 'ت', word: 'تفاحة', emoji: '🍎', color: 'bg-amber-400' },
-  { letter: 'ث', word: 'ثعلب', emoji: '🦊', color: 'bg-yellow-400' },
+  { letter: 'ث', word: 'تعلب', emoji: '🦊', color: 'bg-yellow-400' },
   { letter: 'ج', word: 'جمل', emoji: '🐪', color: 'bg-lime-400' },
   { letter: 'ح', word: 'حصان', emoji: '🐴', color: 'bg-green-400' },
   { letter: 'خ', word: 'خروف', emoji: '🐑', color: 'bg-emerald-400' },
   { letter: 'د', word: 'دب', emoji: '🐻', color: 'bg-teal-400' },
-  { letter: 'ذ', word: 'ذرة', emoji: '🌽', color: 'bg-cyan-400' },
+  { letter: 'ذ', word: 'درة', emoji: '🌽', color: 'bg-cyan-400' },
   { letter: 'ر', word: 'رمان', emoji: '🔴', color: 'bg-sky-400' },
   { letter: 'ز', word: 'زرافة', emoji: '🦒', color: 'bg-blue-400' },
   { letter: 'س', word: 'سمكة', emoji: '🐟', color: 'bg-indigo-400' },
   { letter: 'ش', word: 'شجرة', emoji: '🌳', color: 'bg-violet-400' },
   { letter: 'ص', word: 'صقر', emoji: '🦅', color: 'bg-purple-400' },
   { letter: 'ض', word: 'ضفدع', emoji: '🐸', color: 'bg-fuchsia-400' },
-  { letter: 'ط', word: 'طائرة', emoji: '✈️', color: 'bg-pink-400' },
+  { letter: 'ط', word: 'طيارة', emoji: '✈️', color: 'bg-pink-400' },
   { letter: 'ظ', word: 'ظرف', emoji: '✉️', color: 'bg-rose-400' },
   { letter: 'ع', word: 'عصفور', emoji: '🐦', color: 'bg-red-500' },
   { letter: 'غ', word: 'غزالة', emoji: '🦌', color: 'bg-orange-500' },
   { letter: 'ف', word: 'فيل', emoji: '🐘', color: 'bg-amber-500' },
   { letter: 'ق', word: 'قرد', emoji: '🐒', color: 'bg-yellow-500' },
   { letter: 'ك', word: 'كلب', emoji: '🐶', color: 'bg-lime-500' },
-  { letter: 'ل', word: 'ليمون', emoji: '🍋', color: 'bg-green-500' },
+  { letter: 'ل', word: 'لمون', emoji: '🍋', color: 'bg-green-500' },
   { letter: 'م', word: 'موز', emoji: '🍌', color: 'bg-emerald-500' },
   { letter: 'ن', word: 'نحلة', emoji: '🐝', color: 'bg-teal-500' },
   { letter: 'هـ', word: 'هلال', emoji: '🌙', color: 'bg-cyan-500' },
   { letter: 'و', word: 'وردة', emoji: '🌹', color: 'bg-sky-500' },
-  { letter: 'ي', word: 'يد', emoji: '✋', color: 'bg-blue-500' },
+  { letter: 'ي', word: 'إيد', emoji: '✋', color: 'bg-blue-500' },
 ];
 
 export default function ArabicLetters({ onBack, onWin }: ArabicLettersProps) {
@@ -54,7 +54,7 @@ export default function ArabicLetters({ onBack, onWin }: ArabicLettersProps) {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(`${item.letter}، ${item.word}`);
-      utterance.lang = 'ar-SA';
+      utterance.lang = 'ar-EG';
       utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }
@@ -141,7 +141,7 @@ export default function ArabicLetters({ onBack, onWin }: ArabicLettersProps) {
                 onClick={() => handleSelect(selectedLetter)}
                 className="mt-6 bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-full font-bold text-xl transition-colors flex items-center gap-2"
               >
-                🔊 استمع مرة أخرى
+                🔊 اسمع تاني
               </button>
             </motion.div>
           </motion.div>

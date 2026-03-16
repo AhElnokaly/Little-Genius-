@@ -15,10 +15,10 @@ const FOODS = [
   { id: 'f3', name: 'جزر', emoji: '🥕', isHealthy: true },
   { id: 'f4', name: 'بروكلي', emoji: '🥦', isHealthy: true },
   { id: 'f5', name: 'حليب', emoji: '🥛', isHealthy: true },
-  { id: 'f6', name: 'حلوى', emoji: '🍬', isHealthy: false },
+  { id: 'f6', name: 'حلويات', emoji: '🍬', isHealthy: false },
   { id: 'f7', name: 'شوكولاتة', emoji: '🍫', isHealthy: false },
-  { id: 'f8', name: 'بطاطس مقلية', emoji: '🍟', isHealthy: false },
-  { id: 'f9', name: 'مشروب غازي', emoji: '🥤', isHealthy: false },
+  { id: 'f8', name: 'بطاطس محمرة', emoji: '🍟', isHealthy: false },
+  { id: 'f9', name: 'حاجة ساقعة', emoji: '🥤', isHealthy: false },
   { id: 'f10', name: 'برجر', emoji: '🍔', isHealthy: false },
 ];
 
@@ -42,7 +42,7 @@ export default function HealthyFood({ onBack, onWin }: HealthyFoodProps) {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ar-SA';
+      utterance.lang = 'ar-EG';
       utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }
@@ -90,7 +90,7 @@ export default function HealthyFood({ onBack, onWin }: HealthyFoodProps) {
       }
     } else {
       playSound('incorrect');
-      speak(currentFood.isHealthy ? 'هذا طعام صحي!' : 'هذا طعام غير صحي!');
+      speak(currentFood.isHealthy ? 'ده أكل صحي!' : 'ده أكل مش صحي!');
     }
   };
 
@@ -106,7 +106,7 @@ export default function HealthyFood({ onBack, onWin }: HealthyFoodProps) {
       </div>
 
       <h2 className="text-3xl md:text-5xl font-bold text-lime-800 mt-12 mb-8 text-center">
-        طعام صحي أم ضار؟ 🍎🍔
+        أكل صحي ولا مضر؟ 🍎🍔
       </h2>
 
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-2xl">
@@ -143,7 +143,7 @@ export default function HealthyFood({ onBack, onWin }: HealthyFoodProps) {
             className="bg-red-500 text-white rounded-3xl p-6 shadow-lg border-4 border-red-400 flex flex-col items-center flex-1 max-w-[200px]"
           >
             <span className="text-5xl mb-2">🤒</span>
-            <span className="text-2xl font-bold">غير صحي</span>
+            <span className="text-2xl font-bold">مش صحي</span>
           </motion.button>
         </div>
       </div>

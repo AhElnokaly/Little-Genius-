@@ -11,11 +11,11 @@ interface LetterMatchProps {
 }
 
 const ARABIC_PAIRS = [
-  { id: 'a', letter: 'أ', word: 'أرنب', emoji: '🐰', lang: 'ar-SA' },
-  { id: 'b', letter: 'ب', word: 'بطة', emoji: '🦆', lang: 'ar-SA' },
-  { id: 't', letter: 'ت', word: 'تفاحة', emoji: '🍎', lang: 'ar-SA' },
-  { id: 'th', letter: 'ث', word: 'ثعلب', emoji: '🦊', lang: 'ar-SA' },
-  { id: 'j', letter: 'ج', word: 'جمل', emoji: '🐪', lang: 'ar-SA' },
+  { id: 'a', letter: 'أ', word: 'أرنب', emoji: '🐰', lang: 'ar-EG' },
+  { id: 'b', letter: 'ب', word: 'بطة', emoji: '🦆', lang: 'ar-EG' },
+  { id: 't', letter: 'ت', word: 'تفاحة', emoji: '🍎', lang: 'ar-EG' },
+  { id: 'th', letter: 'ث', word: 'ثعلب', emoji: '🦊', lang: 'ar-EG' },
+  { id: 'j', letter: 'ج', word: 'جمل', emoji: '🐪', lang: 'ar-EG' },
 ];
 
 const ENGLISH_PAIRS = [

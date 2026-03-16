@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -86,7 +86,7 @@ export default function CountingGame({ onBack, onWin }: CountingGameProps) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(`ممتاز! ${num}`);
-        utterance.lang = 'ar-SA';
+        utterance.lang = 'ar-EG';
         window.speechSynthesis.speak(utterance);
       }
 

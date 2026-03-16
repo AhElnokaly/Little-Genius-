@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Home from './components/Home';
 import BalloonPop from './games/BalloonPop';
 import AnimalFriends from './games/AnimalFriends';
@@ -30,6 +30,7 @@ import Coloring from './games/Coloring'; // +++ أضيف بناءً على طل�
 import ParentalGate from './components/ParentalGate';
 import Settings, { UserProfile } from './components/Settings';
 import StickerBook from './components/StickerBook';
+import TimeLockScreen from './components/TimeLockScreen'; // +++ أضيف بناءً على طلبك +++
 import { Star } from 'lucide-react';
 
 export default function App() {
@@ -40,27 +41,113 @@ export default function App() {
     return saved ? JSON.parse(saved) : { name: '', dob: '', lockEnabled: false };
   });
   const [gateAction, setGateAction] = useState<(() => void) | null>(null);
+  const [isTimeLocked, setIsTimeLocked] = useState(false); // +++ أضيف بناءً على طلبك +++
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null); // +++ أضيف بناءً على طلبك +++
+  const [showExitGate, setShowExitGate] = useState(false); // +++ أضيف بناءً على طلبك +++
+
+  // Refs for synchronous access in popstate handler
+  const activeGameRef = useRef(activeGame);
+  useEffect(() => { activeGameRef.current = activeGame; }, [activeGame]);
+
+  const gateActionRef = useRef(gateAction);
+  useEffect(() => { gateActionRef.current = gateAction; }, [gateAction]);
+
+  const showExitGateRef = useRef(showExitGate);
+  useEffect(() => { showExitGateRef.current = showExitGate; }, [showExitGate]);
+
+  const isExitingRef = useRef(false);
+
+  // +++ أضيف بناءً على طلبك: التحكم في زر الرجوع (Back Button) بشكل دقيق +++
+  useEffect(() => {
+    // Initialize history state to trap the back button
+    window.history.replaceState({ app: true }, '');
+    window.history.pushState({ app: true }, '');
+
+    const handlePopState = (event: PopStateEvent) => {
+      if (isExitingRef.current) return;
+
+      // Prevent the browser from actually going back by pushing the state again
+      window.history.pushState({ app: true }, '');
+
+      if (gateActionRef.current) {
+        // Close any open parental gate (e.g., when trying to open settings)
+        setGateAction(null);
+      } else if (showExitGateRef.current) {
+        // Close the exit app parental gate
+        setShowExitGate(false);
+      } else if (activeGameRef.current !== null) {
+        // Close the current game/screen and go back to home
+        setActiveGame(null);
+      } else {
+        // We are on the home screen, show the exit app parental gate
+        setShowExitGate(true);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem('childProfile', JSON.stringify(profile));
+    
+    // +++ أضيف بناءً على طلبك: تهيئة التايمر عند تغيير الإعدادات +++
+    if (profile.playTimeLimit && profile.playTimeLimit > 0) {
+      setTimeRemaining(profile.playTimeLimit * 60); // تحويل الدقائق لثواني
+      setIsTimeLocked(false);
+    } else {
+      setTimeRemaining(null);
+      setIsTimeLocked(false);
+    }
   }, [profile]);
+
+  // +++ أضيف بناءً على طلبك: منطق التايمر +++
+  useEffect(() => {
+    if (timeRemaining === null || isTimeLocked) return;
+
+    const timer = setInterval(() => {
+      setTimeRemaining(prev => {
+        if (prev === null) return null;
+        if (prev <= 1) {
+          setIsTimeLocked(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeRemaining, isTimeLocked]);
 
   const handleWin = () => setStars((s) => s + 1);
 
   const handleBack = () => {
-    setActiveGame(null);
+    // +++ أضيف بناءً على طلبك: العودة باستخدام History API +++
+    window.history.back();
   };
 
   const handleSelectGame = (id: string) => {
     if (id === 'settings') {
       if (profile.lockEnabled) {
-        setGateAction(() => () => setActiveGame('settings'));
+        setGateAction(() => () => {
+          setActiveGame('settings');
+        });
       } else {
         setActiveGame('settings');
       }
     } else {
       setActiveGame(id);
     }
+  };
+
+  // +++ أضيف بناءً على طلبك: الخروج من التطبيق بعد حل المسألة +++
+  const handleExitSuccess = () => {
+    setShowExitGate(false);
+    isExitingRef.current = true;
+    window.history.back();
+    setTimeout(() => {
+      window.history.back();
+    }, 50);
   };
 
   const isBirthday = () => {
@@ -78,9 +165,19 @@ export default function App() {
 
   const age = getAge();
 
+  // +++ أضيف بناءً على طلبك: فتح الشاشة +++
+  const handleUnlockTime = () => {
+    setIsTimeLocked(false);
+    // نوقف التايمر مؤقتاً حتى يدخل الأهل للإعدادات ويعدلوه
+    setTimeRemaining(null); 
+    setActiveGame('settings'); // نوديه للإعدادات عشان يزود الوقت أو يلغيه
+  };
+
   return (
     <div className="w-full h-screen overflow-hidden bg-sky-50 font-sans touch-none select-none relative">
+      {isTimeLocked && <TimeLockScreen onUnlock={handleUnlockTime} />} {/* +++ أضيف بناءً على طلبك +++ */}
       {gateAction && <ParentalGate onSuccess={() => { gateAction(); setGateAction(null); }} onClose={() => setGateAction(null)} />}
+      {showExitGate && <ParentalGate onSuccess={handleExitSuccess} onClose={() => setShowExitGate(false)} />} {/* +++ أضيف بناءً على طلبك +++ */}
       
       {/* Stars UI - hide in settings/stickers */}
       {activeGame !== 'settings' && activeGame !== 'stickers' && activeGame !== null && (
@@ -91,8 +188,8 @@ export default function App() {
       )}
 
       {activeGame === null && <Home onSelect={handleSelectGame} profileName={profile.name} isBirthday={isBirthday()} />}
-      {activeGame === 'settings' && <Settings profile={profile} onSave={setProfile} onBack={() => setActiveGame(null)} />}
-      {activeGame === 'stickers' && <StickerBook stars={stars} onBack={() => setActiveGame(null)} />}
+      {activeGame === 'settings' && <Settings profile={profile} onSave={setProfile} onBack={handleBack} />}
+      {activeGame === 'stickers' && <StickerBook stars={stars} onBack={handleBack} />}
       
       {activeGame === 'balloon' && <BalloonPop onBack={handleBack} onWin={handleWin} />}
       {activeGame === 'animal' && <AnimalFriends onBack={handleBack} onWin={handleWin} />}

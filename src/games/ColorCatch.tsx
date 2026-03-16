@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -61,8 +61,8 @@ export default function ColorCatch({ onBack, onWin }: ColorCatchProps) {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const shapeName = availableShapes.length > 1 ? target.shape.name : 'اللون';
-      const utterance = new SpeechSynthesisUtterance(`أين ال${shapeName} ال${target.color.name}؟`);
-      utterance.lang = 'ar-SA';
+      const utterance = new SpeechSynthesisUtterance(`فين ال${shapeName} ال${target.color.name}؟`);
+      utterance.lang = 'ar-EG';
       utterance.rate = 0.9;
       window.speechSynthesis.speak(utterance);
     }
@@ -100,7 +100,7 @@ export default function ColorCatch({ onBack, onWin }: ColorCatchProps) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance('شاطر!');
-        utterance.lang = 'ar-SA';
+        utterance.lang = 'ar-EG';
         utterance.rate = 1;
         window.speechSynthesis.speak(utterance);
       }
@@ -114,8 +114,8 @@ export default function ColorCatch({ onBack, onWin }: ColorCatchProps) {
       // +++ أضيف بناءً على طلبك: تغذية راجعة صوتية للإجابة الخاطئة +++
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance('حاول مرة أخرى');
-        utterance.lang = 'ar-SA';
+        const utterance = new SpeechSynthesisUtterance('حاول تاني');
+        utterance.lang = 'ar-EG';
         utterance.rate = 1;
         window.speechSynthesis.speak(utterance);
       }
@@ -154,7 +154,7 @@ export default function ColorCatch({ onBack, onWin }: ColorCatchProps) {
       </div>
 
       <h2 className="text-3xl md:text-5xl font-bold text-amber-900 mb-12 text-center bg-white px-8 py-4 rounded-full shadow-sm border-4 border-amber-200">
-        أين ال{level >= 3 ? targetItem.shape.name : 'لون'} <span style={{ color: targetItem.color.hex }}>ال{targetItem.color.name}</span>؟
+        فين ال{level >= 3 ? targetItem.shape.name : 'لون'} <span style={{ color: targetItem.color.hex }}>ال{targetItem.color.name}</span>؟
       </h2>
 
       <div className="flex flex-wrap justify-center gap-6 md:gap-12 max-w-4xl">

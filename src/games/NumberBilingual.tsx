@@ -11,13 +11,13 @@ interface NumberBilingualProps {
 
 const NUMBERS = [
   { val: 1, ar: '١', en: '1', arName: 'واحد', enName: 'One' },
-  { val: 2, ar: '٢', en: '2', arName: 'اثنان', enName: 'Two' },
-  { val: 3, ar: '٣', en: '3', arName: 'ثلاثة', enName: 'Three' },
+  { val: 2, ar: '٢', en: '2', arName: 'اتنين', enName: 'Two' },
+  { val: 3, ar: '٣', en: '3', arName: 'تلاتة', enName: 'Three' },
   { val: 4, ar: '٤', en: '4', arName: 'أربعة', enName: 'Four' },
   { val: 5, ar: '٥', en: '5', arName: 'خمسة', enName: 'Five' },
   { val: 6, ar: '٦', en: '6', arName: 'ستة', enName: 'Six' },
   { val: 7, ar: '٧', en: '7', arName: 'سبعة', enName: 'Seven' },
-  { val: 8, ar: '٨', en: '8', arName: 'ثمانية', enName: 'Eight' },
+  { val: 8, ar: '٨', en: '8', arName: 'تمنية', enName: 'Eight' },
   { val: 9, ar: '٩', en: '9', arName: 'تسعة', enName: 'Nine' },
   { val: 10, ar: '١٠', en: '10', arName: 'عشرة', enName: 'Ten' },
 ];
@@ -95,7 +95,7 @@ export default function NumberBilingual({ onBack, onWin }: NumberBilingualProps)
               whileTap={{ scale: 0.95 }}
               onClick={() => {
                 if (showTutorial) setShowTutorial(false);
-                speak(currentNumber.arName, 'ar-SA');
+                speak(currentNumber.arName, 'ar-EG');
                 setArClicked(true);
               }}
               className={`w-40 h-56 md:w-64 md:h-80 rounded-[3rem] shadow-2xl border-8 flex flex-col items-center justify-center transition-colors ${

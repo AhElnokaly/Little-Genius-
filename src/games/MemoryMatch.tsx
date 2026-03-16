@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -95,8 +95,8 @@ export default function MemoryMatch({ onBack, onWin, age = 3 }: MemoryMatchProps
             });
             if ('speechSynthesis' in window) {
               window.speechSynthesis.cancel();
-              const utterance = new SpeechSynthesisUtterance('عمل رائع!');
-              utterance.lang = 'ar-SA';
+              const utterance = new SpeechSynthesisUtterance('شاطر!');
+              utterance.lang = 'ar-EG';
               window.speechSynthesis.speak(utterance);
             }
             // +++ أضيف بناءً على طلبك: الانتقال للمرحلة التالية +++
@@ -133,7 +133,7 @@ export default function MemoryMatch({ onBack, onWin, age = 3 }: MemoryMatchProps
       </div>
       
       <h2 className="text-3xl md:text-5xl font-bold text-indigo-800 mb-8 text-center">
-        أين المتشابه؟ 🧠
+        فين المتشابه؟ 🧠
       </h2>
 
       <div className="grid grid-cols-3 gap-4 md:gap-6 max-w-2xl w-full">

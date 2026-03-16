@@ -11,9 +11,9 @@ interface AnimalFamilyProps {
 
 const FAMILIES = [
   { id: 'dog', baby: 'جرو', adult: 'كلب', babyEmoji: '🐶', adultEmoji: '🐕', audioUrl: '/dog.mp3' },
-  { id: 'cat', baby: 'قطة صغيرة', adult: 'قطة', babyEmoji: '🐱', adultEmoji: '🐈', audioUrl: '/cat.mp3' },
-  { id: 'chicken', baby: 'كتكوت', adult: 'دجاجة', babyEmoji: '🐥', adultEmoji: '🐔', audioUrl: '/chicken.ogg' },
-  { id: 'sheep', baby: 'حمل', adult: 'خروف', babyEmoji: '🐑', adultEmoji: '🐏', audioUrl: '/sheep.ogg' },
+  { id: 'cat', baby: 'قطة نونو', adult: 'قطة', babyEmoji: '🐱', adultEmoji: '🐈', audioUrl: '/cat.mp3' },
+  { id: 'chicken', baby: 'كتكوت', adult: 'فرخة', babyEmoji: '🐥', adultEmoji: '🐔', audioUrl: '/chicken.ogg' },
+  { id: 'sheep', baby: 'خروف صغير', adult: 'خروف', babyEmoji: '🐑', adultEmoji: '🐏', audioUrl: '/sheep.ogg' },
   { id: 'cow', baby: 'عجل', adult: 'بقرة', babyEmoji: '🐮', adultEmoji: '🐄', audioUrl: '/cow.mp3' },
   { id: 'horse', baby: 'مهر', adult: 'حصان', babyEmoji: '🐴', adultEmoji: '🐎', audioUrl: '/horse.mp3' },
 ];
@@ -42,7 +42,7 @@ export default function AnimalFamily({ onBack, onWin }: AnimalFamilyProps) {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ar-SA';
+      utterance.lang = 'ar-EG';
       utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }

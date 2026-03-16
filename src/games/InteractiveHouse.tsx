@@ -21,7 +21,7 @@ export default function InteractiveHouse({ onBack, onWin }: InteractiveHouseProp
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ar-SA';
+      utterance.lang = 'ar-EG';
       utterance.rate = 0.8;
       window.speechSynthesis.speak(utterance);
     }
@@ -61,7 +61,7 @@ export default function InteractiveHouse({ onBack, onWin }: InteractiveHouseProp
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => handleInteract(windowOpen ? 'نافذة مفتوحة' : 'نافذة مغلقة', () => setWindowOpen(!windowOpen))}
+            onClick={() => handleInteract(windowOpen ? 'شباك مفتوح' : 'شباك مقفول', () => setWindowOpen(!windowOpen))}
             className="absolute top-[15%] left-[10%] w-[25%] aspect-square bg-sky-200 border-8 border-amber-700 flex items-center justify-center overflow-hidden shadow-inner"
           >
             <div className={`absolute inset-0 bg-sky-900 transition-opacity duration-1000 ${windowOpen ? 'opacity-0' : 'opacity-50'}`} />
@@ -72,7 +72,7 @@ export default function InteractiveHouse({ onBack, onWin }: InteractiveHouseProp
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => handleInteract(doorOpen ? 'باب مفتوح' : 'باب مغلق', () => setDoorOpen(!doorOpen))}
+            onClick={() => handleInteract(doorOpen ? 'باب مفتوح' : 'باب مقفول', () => setDoorOpen(!doorOpen))}
             className="absolute bottom-0 right-[40%] w-[20%] h-[55%] bg-amber-800 border-t-8 border-l-8 border-r-8 border-amber-900 flex items-center justify-start p-4 origin-right transition-transform duration-500 shadow-xl"
             style={{ transform: doorOpen ? 'perspective(1000px) rotateY(-60deg)' : 'none' }}
           >
@@ -83,7 +83,7 @@ export default function InteractiveHouse({ onBack, onWin }: InteractiveHouseProp
           <motion.button
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            onClick={() => handleInteract(lightOn ? 'مصباح مضيء' : 'مصباح مطفأ', () => setLightOn(!lightOn))}
+            onClick={() => handleInteract(lightOn ? 'نور منور' : 'نور مطفي', () => setLightOn(!lightOn))}
             className="absolute top-0 left-1/2 -translate-x-1/2 flex flex-col items-center z-20"
           >
             <div className="w-2 h-12 md:h-20 bg-slate-400" />
@@ -96,7 +96,7 @@ export default function InteractiveHouse({ onBack, onWin }: InteractiveHouseProp
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => handleInteract(tvOn ? 'تلفاز يعمل' : 'تلفاز مغلق', () => setTvOn(!tvOn))}
+            onClick={() => handleInteract(tvOn ? 'تلفزيون شغال' : 'تلفزيون مقفول', () => setTvOn(!tvOn))}
             className="absolute top-[20%] right-[10%] w-[25%] aspect-video bg-slate-800 border-4 border-slate-900 rounded-xl flex items-center justify-center overflow-hidden shadow-lg"
           >
             {tvOn ? (

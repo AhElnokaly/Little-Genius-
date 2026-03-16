@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -72,8 +72,8 @@ export default function JigsawPuzzle({ onBack, onWin, age = 3 }: JigsawPuzzlePro
       });
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance('منزل جميل!');
-        utterance.lang = 'ar-SA';
+        const utterance = new SpeechSynthesisUtterance('بيت جميل!');
+        utterance.lang = 'ar-EG';
         window.speechSynthesis.speak(utterance);
       }
       // +++ أضيف بناءً على طلبك: الانتقال للمرحلة التالية +++
@@ -102,7 +102,7 @@ export default function JigsawPuzzle({ onBack, onWin, age = 3 }: JigsawPuzzlePro
       </div>
       
       <h2 className="text-3xl md:text-5xl font-bold text-green-800 mb-8 text-center">
-        هيا نبني المنزل! 🏠
+        يلا نبني البيت! 🏠
       </h2>
 
       {/* Target Area */}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
 import confetti from 'canvas-confetti';
@@ -26,11 +26,11 @@ const ANIMALS = [
   { id: 'rooster', name: 'الديك', emoji: '🐔', sound: 'صياح', audioUrl: '/rooster.ogg', color: 'bg-red-300' },
   { id: 'owl', name: 'البومة', emoji: '🦉', sound: 'نعيب', audioUrl: '/owl.ogg', color: 'bg-indigo-300' },
   { id: 'bee', name: 'النحلة', emoji: '🐝', sound: 'طنين', audioUrl: '/bee.ogg', color: 'bg-yellow-400' },
-  { id: 'wolf', name: 'الذئب', emoji: '🐺', sound: 'عواء', audioUrl: '/wolf.mp3', color: 'bg-slate-500' },
+  { id: 'wolf', name: 'الديب', emoji: '🐺', sound: 'عواء', audioUrl: '/wolf.mp3', color: 'bg-slate-500' },
   { id: 'turkey', name: 'الديك الرومي', emoji: '🦃', sound: 'قرقرة', audioUrl: '/turkey.ogg', color: 'bg-orange-500' },
-  { id: 'mouse', name: 'الفأر', emoji: '🐭', sound: 'صرير', audioUrl: '/mouse.mp3', color: 'bg-stone-300' },
-  { id: 'dolphin', name: 'الدلفين', emoji: '🐬', sound: 'صفير', audioUrl: '/dolphin.ogg', color: 'bg-cyan-300' },
-  { id: 'goat', name: 'الماعز', emoji: '🐐', sound: 'ثغاء', audioUrl: '/goat.ogg', color: 'bg-stone-400' },
+  { id: 'mouse', name: 'الفار', emoji: '🐭', sound: 'صرير', audioUrl: '/mouse.mp3', color: 'bg-stone-300' },
+  { id: 'dolphin', name: 'الدرفيل', emoji: '🐬', sound: 'صفير', audioUrl: '/dolphin.ogg', color: 'bg-cyan-300' },
+  { id: 'goat', name: 'المعزة', emoji: '🐐', sound: 'ثغاء', audioUrl: '/goat.ogg', color: 'bg-stone-400' },
   { id: 'penguin', name: 'البطريق', emoji: '🐧', sound: 'صياح', audioUrl: '/penguin.ogg', color: 'bg-sky-200' },
 ];
 
