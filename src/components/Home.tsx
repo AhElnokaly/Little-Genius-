@@ -52,14 +52,18 @@ export default function Home({ onSelect, profileName, isBirthday }: HomeProps) {
         { id: 'nature', title: 'طبيعة', icon: '🌿', color: 'bg-green-500' },
         { id: 'animalfamily', title: 'عائلات', icon: '🐾', color: 'bg-orange-400' },
         { id: 'animal', title: 'حيوانات', icon: '🐶', color: 'bg-green-400' },
+        { id: 'time', title: 'الوقت', icon: '⏰', color: 'bg-blue-500' }, // +++ أضيف بناءً على طلبك +++
+        { id: 'moon', title: 'القمر', icon: '🌙', color: 'bg-slate-700' }, // +++ أضيف بناءً على طلبك +++
       ]
     },
     {
       title: 'ألعاب ومهارات 🎨',
       games: [
         { id: 'balloon', title: 'بالونات', icon: '🎈', color: 'bg-red-400' },
-        { id: 'draw', title: 'رسم', icon: '✨', color: 'bg-purple-400' },
+        { id: 'draw', title: 'رسم حر', icon: '✨', color: 'bg-purple-400' },
+        { id: 'drawshapes', title: 'ارسم شكل', icon: '✏️', color: 'bg-indigo-500' }, // +++ أضيف بناءً على طلبك +++
         { id: 'color', title: 'ألوان', icon: '🎨', color: 'bg-blue-400' },
+        { id: 'coloring', title: 'تلوين', icon: '🖍️', color: 'bg-rose-400' }, // +++ أضيف بناءً على طلبك +++
         { id: 'sorter', title: 'أشكال', icon: '🧩', color: 'bg-orange-400' },
         { id: 'piano', title: 'بيانو', icon: '🎹', color: 'bg-pink-400' },
         { id: 'fish', title: 'سمك', icon: '🐟', color: 'bg-cyan-400' },

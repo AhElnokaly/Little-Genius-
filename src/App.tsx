@@ -23,6 +23,10 @@ import HealthyFood from './games/HealthyFood'; // +++ أضيف بناءً على
 import InteractiveHouse from './games/InteractiveHouse'; // +++ أضيف بناءً على طلبك +++
 import AnimalFamily from './games/AnimalFamily'; // +++ أضيف بناءً على طلبك +++
 import NumberBilingual from './games/NumberBilingual'; // +++ أضيف بناءً على طلبك +++
+import TimeAndCalendar from './games/TimeAndCalendar'; // +++ أضيف بناءً على طلبك +++
+import DrawShapes from './games/DrawShapes'; // +++ أضيف بناءً على طلبك +++
+import MoonPhases from './games/MoonPhases'; // +++ أضيف بناءً على طلبك +++
+import Coloring from './games/Coloring'; // +++ أضيف بناءً على طلبك +++
 import ParentalGate from './components/ParentalGate';
 import Settings, { UserProfile } from './components/Settings';
 import StickerBook from './components/StickerBook';
@@ -108,6 +112,10 @@ export default function App() {
       {activeGame === 'house' && <InteractiveHouse onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
       {activeGame === 'animalfamily' && <AnimalFamily onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
       {activeGame === 'numbers' && <NumberBilingual onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
+      {activeGame === 'time' && <TimeAndCalendar onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
+      {activeGame === 'drawshapes' && <DrawShapes onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
+      {activeGame === 'moon' && <MoonPhases onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
+      {activeGame === 'coloring' && <Coloring onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
     </div>
   );
 }

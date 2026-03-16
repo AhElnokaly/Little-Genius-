@@ -10,12 +10,12 @@ interface AnimalFamilyProps {
 }
 
 const FAMILIES = [
-  { id: 'dog', baby: 'جرو', adult: 'كلب', babyEmoji: '🐶', adultEmoji: '🐕', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/71/Dog_bark_1.ogg' },
-  { id: 'cat', baby: 'قطة صغيرة', adult: 'قطة', babyEmoji: '🐱', adultEmoji: '🐈', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Cat_Meow_2.ogg' },
-  { id: 'chicken', baby: 'كتكوت', adult: 'دجاجة', babyEmoji: '🐥', adultEmoji: '🐔', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Rooster_crow.ogg' },
-  { id: 'sheep', baby: 'حمل', adult: 'خروف', babyEmoji: '🐑', adultEmoji: '🐏', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Sheep_bleat.ogg' },
-  { id: 'cow', baby: 'عجل', adult: 'بقرة', babyEmoji: '🐮', adultEmoji: '🐄', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d4/Cow_moo.ogg' },
-  { id: 'horse', baby: 'مهر', adult: 'حصان', babyEmoji: '🐴', adultEmoji: '🐎', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/87/Horse_whinny.ogg' },
+  { id: 'dog', baby: 'جرو', adult: 'كلب', babyEmoji: '🐶', adultEmoji: '🐕', audioUrl: '/dog.mp3' },
+  { id: 'cat', baby: 'قطة صغيرة', adult: 'قطة', babyEmoji: '🐱', adultEmoji: '🐈', audioUrl: '/cat.mp3' },
+  { id: 'chicken', baby: 'كتكوت', adult: 'دجاجة', babyEmoji: '🐥', adultEmoji: '🐔', audioUrl: '/chicken.ogg' },
+  { id: 'sheep', baby: 'حمل', adult: 'خروف', babyEmoji: '🐑', adultEmoji: '🐏', audioUrl: '/sheep.ogg' },
+  { id: 'cow', baby: 'عجل', adult: 'بقرة', babyEmoji: '🐮', adultEmoji: '🐄', audioUrl: '/cow.mp3' },
+  { id: 'horse', baby: 'مهر', adult: 'حصان', babyEmoji: '🐴', adultEmoji: '🐎', audioUrl: '/horse.mp3' },
 ];
 
 export default function AnimalFamily({ onBack, onWin }: AnimalFamilyProps) {

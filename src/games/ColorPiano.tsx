@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
 import confetti from 'canvas-confetti';
+import { getAudioContext } from '../utils/audio';
 
 interface ColorPianoProps {
   onBack: () => void;
@@ -32,7 +33,7 @@ export default function ColorPiano({ onBack, onWin }: ColorPianoProps) {
     });
 
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);

@@ -3,6 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import { motion } from 'motion/react';
 import confetti from 'canvas-confetti';
 import TutorialHand from '../components/TutorialHand';
+import { speak, getAudioContext } from '../utils/audio';
 
 interface AnimalFriendsProps {
   onBack: () => void;
@@ -11,26 +12,26 @@ interface AnimalFriendsProps {
 
 // +++ بناءً على طلبك: تم استبعاد الخنزير وإضافة حيوانات أخرى +++
 const ANIMALS = [
-  { id: 'cat', emoji: '🐱', sound: 'مياو', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Cat_Meow_2.ogg', color: 'bg-orange-300' },
-  { id: 'dog', emoji: '🐶', sound: 'هوهو', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/71/Dog_bark_1.ogg', color: 'bg-blue-300' },
-  { id: 'cow', emoji: '🐮', sound: 'مووو', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d4/Cow_moo.ogg', color: 'bg-green-300' },
-  { id: 'duck', emoji: '🦆', sound: 'كواك', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a3/Duck_quack.ogg', color: 'bg-yellow-300' },
-  { id: 'sheep', emoji: '🐑', sound: 'باع', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Sheep_bleat.ogg', color: 'bg-slate-300' },
-  { id: 'frog', emoji: '🐸', sound: 'ريبیت', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/6d/Frog_croaking.ogg', color: 'bg-green-400' },
-  { id: 'bird', emoji: '🐦', sound: 'زقزقة', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Canary_singing.ogg', color: 'bg-sky-300' },
-  { id: 'monkey', emoji: '🐵', sound: 'أوو أوو', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/4/4c/Chimpanzee_pant-hoot.ogg', color: 'bg-amber-300' },
-  { id: 'horse', emoji: '🐴', sound: 'صهيل', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/8/87/Horse_whinny.ogg', color: 'bg-amber-500' },
-  { id: 'elephant', emoji: '🐘', sound: 'بوق الفيل', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b2/Elephant_trumpet.ogg', color: 'bg-slate-400' },
-  { id: 'lion', emoji: '🦁', sound: 'زئير', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/e/e0/Lion_roar.ogg', color: 'bg-orange-400' },
-  { id: 'rooster', emoji: '🐔', sound: 'كوكوكو', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Rooster_crow.ogg', color: 'bg-red-300' },
-  { id: 'owl', emoji: '🦉', sound: 'هوو هوو', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/16/Owl_hoot.ogg', color: 'bg-indigo-300' },
-  { id: 'bee', emoji: '🐝', sound: 'طنين', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f6/Bee_buzz.ogg', color: 'bg-yellow-400' },
-  { id: 'wolf', emoji: '🐺', sound: 'عواء', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f3/Wolf_howl.ogg', color: 'bg-slate-500' },
-  { id: 'turkey', emoji: '🦃', sound: 'جوبل', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/c4/Turkey_gobble.ogg', color: 'bg-orange-500' },
-  { id: 'mouse', emoji: '🐭', sound: 'سقسقة', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/f/f1/Mouse_squeak.ogg', color: 'bg-stone-300' },
-  { id: 'dolphin', emoji: '🐬', sound: 'كليك', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/7/7a/Dolphin_clicks.ogg', color: 'bg-cyan-300' },
-  { id: 'goat', emoji: '🐐', sound: 'ماء', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/1b/Goat_bleat.ogg', color: 'bg-stone-400' },
-  { id: 'penguin', emoji: '🐧', sound: 'بطريق', audioUrl: 'https://upload.wikimedia.org/wikipedia/commons/5/5a/Penguin_call.ogg', color: 'bg-sky-200' },
+  { id: 'cat', name: 'القطة', emoji: '🐱', sound: 'مياو', audioUrl: '/cat.mp3', color: 'bg-orange-300' },
+  { id: 'dog', name: 'الكلب', emoji: '🐶', sound: 'نباح', audioUrl: '/dog.mp3', color: 'bg-blue-300' },
+  { id: 'cow', name: 'البقرة', emoji: '🐮', sound: 'خوار', audioUrl: '/cow.mp3', color: 'bg-green-300' },
+  { id: 'duck', name: 'البطة', emoji: '🦆', sound: 'بطبطة', audioUrl: '/duck.ogg', color: 'bg-yellow-300' },
+  { id: 'sheep', name: 'الخروف', emoji: '🐑', sound: 'مأمأة', audioUrl: '/sheep.ogg', color: 'bg-slate-300' },
+  { id: 'frog', name: 'الضفدع', emoji: '🐸', sound: 'نقيق', audioUrl: '/frog.ogg', color: 'bg-green-400' },
+  { id: 'bird', name: 'العصفور', emoji: '🐦', sound: 'زقزقة', audioUrl: '/bird.mp3', color: 'bg-sky-300' },
+  { id: 'monkey', name: 'القرد', emoji: '🐵', sound: 'ضحك', audioUrl: '/monkey.mp3', color: 'bg-amber-300' },
+  { id: 'horse', name: 'الحصان', emoji: '🐴', sound: 'صهيل', audioUrl: '/horse.mp3', color: 'bg-amber-500' },
+  { id: 'elephant', name: 'الفيل', emoji: '🐘', sound: 'نهيم', audioUrl: '/elephant.ogg', color: 'bg-slate-400' },
+  { id: 'lion', name: 'الأسد', emoji: '🦁', sound: 'زئير', audioUrl: '/lion.mp3', color: 'bg-orange-400' },
+  { id: 'rooster', name: 'الديك', emoji: '🐔', sound: 'صياح', audioUrl: '/rooster.ogg', color: 'bg-red-300' },
+  { id: 'owl', name: 'البومة', emoji: '🦉', sound: 'نعيب', audioUrl: '/owl.ogg', color: 'bg-indigo-300' },
+  { id: 'bee', name: 'النحلة', emoji: '🐝', sound: 'طنين', audioUrl: '/bee.ogg', color: 'bg-yellow-400' },
+  { id: 'wolf', name: 'الذئب', emoji: '🐺', sound: 'عواء', audioUrl: '/wolf.mp3', color: 'bg-slate-500' },
+  { id: 'turkey', name: 'الديك الرومي', emoji: '🦃', sound: 'قرقرة', audioUrl: '/turkey.ogg', color: 'bg-orange-500' },
+  { id: 'mouse', name: 'الفأر', emoji: '🐭', sound: 'صرير', audioUrl: '/mouse.mp3', color: 'bg-stone-300' },
+  { id: 'dolphin', name: 'الدلفين', emoji: '🐬', sound: 'صفير', audioUrl: '/dolphin.ogg', color: 'bg-cyan-300' },
+  { id: 'goat', name: 'الماعز', emoji: '🐐', sound: 'ثغاء', audioUrl: '/goat.ogg', color: 'bg-stone-400' },
+  { id: 'penguin', name: 'البطريق', emoji: '🐧', sound: 'صياح', audioUrl: '/penguin.ogg', color: 'bg-sky-200' },
 ];
 
 export default function AnimalFriends({ onBack, onWin }: AnimalFriendsProps) {
@@ -41,26 +42,19 @@ export default function AnimalFriends({ onBack, onWin }: AnimalFriendsProps) {
   
   const currentAnimals = ANIMALS.slice(0, level * 2);
 
-  const playSound = (animalId: string, sound: string, audioUrl: string, e: React.MouseEvent | React.TouchEvent | React.PointerEvent) => {
+  const playSound = async (animal: typeof ANIMALS[0], e: React.MouseEvent | React.TouchEvent | React.PointerEvent) => {
     e.stopPropagation();
     if (showTutorial) setShowTutorial(false);
     
-    // +++ أضيف بناءً على طلبك: أصوات حقيقية مع بديل صوتي +++
-    const audio = new Audio(audioUrl);
-    audio.play().catch(() => {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(sound);
-        utterance.lang = 'ar-SA';
-        utterance.rate = 0.8;
-        utterance.pitch = 1.5;
-        window.speechSynthesis.speak(utterance);
-      }
-    });
+    // +++ أضيف بناءً على طلبك: نطق اسم الحيوان وصوته ثم تشغيل الصوت +++
+    await speak(`صوت ${animal.name} ${animal.sound}`, 'ar-EG');
+    
+    const audio = new Audio(animal.audioUrl);
+    audio.play().catch(() => {});
 
     // +++ أضيف بناءً على طلبك: التحقق من اكتمال المرحلة +++
-    if (!interacted.includes(animalId)) {
-      const newInteracted = [...interacted, animalId];
+    if (!interacted.includes(animal.id)) {
+      const newInteracted = [...interacted, animal.id];
       setInteracted(newInteracted);
       if (newInteracted.length === currentAnimals.length) {
         if (onWin) onWin();
@@ -92,7 +86,7 @@ export default function AnimalFriends({ onBack, onWin }: AnimalFriendsProps) {
   // +++ أضيف بناءً على طلبك: تغذية راجعة للإجراء الخاطئ (الضغط خارج الحيوانات) +++
   const handleMiss = () => {
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);
@@ -128,7 +122,7 @@ export default function AnimalFriends({ onBack, onWin }: AnimalFriendsProps) {
               key={animal.id}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.9, rotate: [0, -10, 10, -10, 0] }}
-              onPointerDown={(e) => playSound(animal.id, animal.sound, animal.audioUrl, e)}
+              onPointerDown={(e) => playSound(animal, e)}
               className={`${animal.color} ${interacted.includes(animal.id) ? 'opacity-50' : 'opacity-100'} aspect-square rounded-3xl flex items-center justify-center shadow-xl border-4 border-white/50 text-6xl md:text-8xl transition-opacity`}
             >
               {animal.emoji}

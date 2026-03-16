@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { getAudioContext } from '../utils/audio';
 
 interface BalloonPopProps {
   onBack: () => void;
@@ -64,7 +65,7 @@ export default function BalloonPop({ onBack, onWin }: BalloonPopProps) {
 
     // Play pop sound (using Web Audio API for simple beep if no asset)
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);
@@ -86,7 +87,7 @@ export default function BalloonPop({ onBack, onWin }: BalloonPopProps) {
   // +++ أضيف بناءً على طلبك: تغذية راجعة للإجراء الخاطئ (الضغط خارج البالون) +++
   const handleMiss = () => {
     try {
-      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const ctx = getAudioContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.connect(gain);
@@ -114,7 +115,7 @@ export default function BalloonPop({ onBack, onWin }: BalloonPopProps) {
         {balloons.map((balloon) => (
           <motion.div
             key={balloon.id}
-            initial={{ y: '110vh', x: `${balloon.x}vw`, scale: 0 }}
+            initial={{ y: '110vh', scale: 0 }}
             animate={{ y: '-20vh', scale: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             transition={{ 
@@ -127,6 +128,7 @@ export default function BalloonPop({ onBack, onWin }: BalloonPopProps) {
             onPointerDown={(e) => popBalloon(balloon.id, e)}
             className={`absolute w-24 h-32 rounded-[50%] ${balloon.color} shadow-inner cursor-pointer flex items-center justify-center`}
             style={{
+              left: `${balloon.x}vw`,
               boxShadow: 'inset -10px -10px 20px rgba(0,0,0,0.2), inset 10px 10px 20px rgba(255,255,255,0.4)'
             }}
           >
