@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Settings as SettingsIcon, Image as ImageIcon, Download } from 'lucide-react';
+import { speak } from '../utils/audio'; // +++ أضيف بناءً على طلبك +++
 
 interface HomeProps {
   onSelect: (id: string) => void;
   profileName: string;
   isBirthday: boolean;
+  avatar?: string; // +++ أضيف بناءً على طلبك +++
 }
 
-export default function Home({ onSelect, profileName, isBirthday }: HomeProps) {
+export default function Home({ onSelect, profileName, isBirthday, avatar = '👦' }: HomeProps) {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   useEffect(() => {
@@ -33,15 +35,22 @@ export default function Home({ onSelect, profileName, isBirthday }: HomeProps) {
     }
   };
 
+  const handleGameClick = (id: string, title: string) => {
+    speak(title); // +++ أضيف بناءً على طلبك: نطق اسم اللعبة +++
+    onSelect(id);
+  };
+
   const categories = [
     {
       title: 'الحروف والأرقام 🔢',
       games: [
         { id: 'arabic', title: 'حروف عربي', icon: 'أ', color: 'bg-teal-400' },
+        { id: 'tashkeel', title: 'تشكيل الحروف', icon: 'َُِ', color: 'bg-indigo-400' }, // +++ أضيف بناءً على طلبك +++
         { id: 'english', title: 'حروف English', icon: 'A', color: 'bg-rose-400' },
         { id: 'numbers', title: 'أرقام 123', icon: '١', color: 'bg-sky-400' },
         { id: 'counting', title: 'عد الأشياء', icon: '🔢', color: 'bg-amber-400' },
         { id: 'lettermatch', title: 'توصيل حروف', icon: '🔤', color: 'bg-violet-400' },
+        { id: 'simplemath', title: 'حساب بسيط', icon: '➕', color: 'bg-fuchsia-400' }, // +++ أضيف بناءً على طلبك +++
       ]
     },
     {
@@ -52,8 +61,9 @@ export default function Home({ onSelect, profileName, isBirthday }: HomeProps) {
         { id: 'nature', title: 'طبيعة', icon: '🌿', color: 'bg-green-500' },
         { id: 'animalfamily', title: 'عائلات', icon: '🐾', color: 'bg-orange-400' },
         { id: 'animal', title: 'حيوانات', icon: '🐶', color: 'bg-green-400' },
-        { id: 'time', title: 'الوقت', icon: '⏰', color: 'bg-blue-500' }, // +++ أضيف بناءً على طلبك +++
-        { id: 'moon', title: 'القمر', icon: '🌙', color: 'bg-slate-700' }, // +++ أضيف بناءً على طلبك +++
+        { id: 'guesssound', title: 'خمن الصوت', icon: '👂', color: 'bg-yellow-400' }, // +++ أضيف بناءً على طلبك +++
+        { id: 'time', title: 'الوقت', icon: '⏰', color: 'bg-blue-500' },
+        { id: 'moon', title: 'القمر', icon: '🌙', color: 'bg-slate-700' },
       ]
     },
     {
@@ -61,9 +71,9 @@ export default function Home({ onSelect, profileName, isBirthday }: HomeProps) {
       games: [
         { id: 'balloon', title: 'بالونات', icon: '🎈', color: 'bg-red-400' },
         { id: 'draw', title: 'رسم حر', icon: '✨', color: 'bg-purple-400' },
-        { id: 'drawshapes', title: 'ارسم شكل', icon: '✏️', color: 'bg-indigo-500' }, // +++ أضيف بناءً على طلبك +++
+        { id: 'drawshapes', title: 'ارسم شكل', icon: '✏️', color: 'bg-indigo-500' },
         { id: 'color', title: 'ألوان', icon: '🎨', color: 'bg-blue-400' },
-        { id: 'coloring', title: 'تلوين', icon: '🖍️', color: 'bg-rose-400' }, // +++ أضيف بناءً على طلبك +++
+        { id: 'coloring', title: 'تلوين', icon: '🖍️', color: 'bg-rose-400' },
         { id: 'sorter', title: 'أشكال', icon: '🧩', color: 'bg-orange-400' },
         { id: 'piano', title: 'بيانو', icon: '🎹', color: 'bg-pink-400' },
         { id: 'fish', title: 'سمك', icon: '🐟', color: 'bg-cyan-400' },
@@ -105,8 +115,9 @@ export default function Home({ onSelect, profileName, isBirthday }: HomeProps) {
         <motion.h1 
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="text-3xl md:text-5xl font-extrabold text-sky-800 drop-shadow-sm"
+          className="text-3xl md:text-5xl font-extrabold text-sky-800 drop-shadow-sm flex items-center justify-center gap-4"
         >
+          <span className="text-5xl">{avatar}</span> {/* +++ أضيف بناءً على طلبك +++ */}
           {isBirthday ? `🎉 عيد ميلاد سعيد ${profileName}! 🎂` : `أهلاً ${profileName || 'يا بطل'} 🌟`}
         </motion.h1>
       </div>
@@ -124,7 +135,7 @@ export default function Home({ onSelect, profileName, isBirthday }: HomeProps) {
                   key={game.id}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => onSelect(game.id)}
+                  onClick={() => handleGameClick(game.id, game.title)}
                   className={`${game.color} rounded-3xl shadow-lg flex flex-col items-center justify-center p-3 md:p-4 border-4 border-white/40 relative overflow-hidden aspect-square`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />

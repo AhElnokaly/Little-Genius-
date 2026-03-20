@@ -6,6 +6,7 @@ export interface UserProfile {
   dob: string;
   lockEnabled: boolean;
   playTimeLimit?: number; // +++ أضيف بناءً على طلبك +++
+  avatar?: string; // +++ أضيف بناءً على طلبك +++
 }
 
 interface SettingsProps {
@@ -14,14 +15,17 @@ interface SettingsProps {
   onBack: () => void;
 }
 
+const AVATARS = ['👦', '👧', '🐶', '🐱', '🦁', '🐯', '🐰', '🐼', '🦊', '🐸']; // +++ أضيف بناءً على طلبك +++
+
 export default function Settings({ profile, onSave, onBack }: SettingsProps) {
   const [name, setName] = useState(profile.name);
   const [dob, setDob] = useState(profile.dob);
   const [lockEnabled, setLockEnabled] = useState(profile.lockEnabled);
   const [playTimeLimit, setPlayTimeLimit] = useState(profile.playTimeLimit || 0); // +++ أضيف بناءً على طلبك +++
+  const [avatar, setAvatar] = useState(profile.avatar || '👦'); // +++ أضيف بناءً على طلبك +++
 
   const handleSave = () => {
-    onSave({ name, dob, lockEnabled, playTimeLimit }); // +++ أضيف بناءً على طلبك +++
+    onSave({ name, dob, lockEnabled, playTimeLimit, avatar }); // +++ أضيف بناءً على طلبك +++
     onBack();
   };
 
@@ -34,6 +38,22 @@ export default function Settings({ profile, onSave, onBack }: SettingsProps) {
         <h2 className="text-3xl font-bold text-slate-800 mb-8 text-center">الإعدادات ⚙️</h2>
         
         <div className="space-y-6 text-right" dir="rtl">
+          {/* +++ أضيف بناءً على طلبك: اختيار الأفاتار +++ */}
+          <div>
+            <label className="block text-lg font-bold text-slate-700 mb-2">اختر شخصيتك</label>
+            <div className="flex flex-wrap gap-2 justify-center bg-slate-50 p-4 rounded-2xl border-2 border-slate-200">
+              {AVATARS.map((a) => (
+                <button
+                  key={a}
+                  onClick={() => setAvatar(a)}
+                  className={`text-4xl p-2 rounded-full transition-transform ${avatar === a ? 'bg-sky-200 scale-110 shadow-md' : 'hover:bg-slate-200 hover:scale-105'}`}
+                >
+                  {a}
+                </button>
+              ))}
+            </div>
+          </div>
+          
           <div>
             <label className="block text-lg font-bold text-slate-700 mb-2">اسم الطفل</label>
             <input 

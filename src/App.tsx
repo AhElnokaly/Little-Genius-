@@ -15,6 +15,7 @@ import CatchFish from './games/CatchFish';
 import JigsawPuzzle from './games/JigsawPuzzle';
 import MemoryMatch from './games/MemoryMatch';
 import ArabicLetters from './games/ArabicLetters'; // +++ أضيف بناءً على طلبك +++
+import ArabicTashkeel from './games/ArabicTashkeel'; // +++ أضيف بناءً على طلبك +++
 import EnglishLetters from './games/EnglishLetters'; // +++ أضيف بناءً على طلبك +++
 import NatureExplorer from './games/NatureExplorer'; // +++ أضيف بناءً على طلبك +++
 import CountingGame from './games/CountingGame'; // +++ أضيف بناءً على طلبك +++
@@ -27,6 +28,8 @@ import TimeAndCalendar from './games/TimeAndCalendar'; // +++ أضيف بناء�
 import DrawShapes from './games/DrawShapes'; // +++ أضيف بناءً على طلبك +++
 import MoonPhases from './games/MoonPhases'; // +++ أضيف بناءً على طلبك +++
 import Coloring from './games/Coloring'; // +++ أضيف بناءً على طلبك +++
+import GuessSound from './games/GuessSound'; // +++ أضيف بناءً على طلبك +++
+import SimpleMath from './games/SimpleMath'; // +++ أضيف بناءً على طلبك +++
 import ParentalGate from './components/ParentalGate';
 import Settings, { UserProfile } from './components/Settings';
 import StickerBook from './components/StickerBook';
@@ -187,7 +190,7 @@ export default function App() {
         </div>
       )}
 
-      {activeGame === null && <Home onSelect={handleSelectGame} profileName={profile.name} isBirthday={isBirthday()} />}
+      {activeGame === null && <Home onSelect={handleSelectGame} profileName={profile.name} isBirthday={isBirthday()} avatar={profile.avatar} />}
       {activeGame === 'settings' && <Settings profile={profile} onSave={setProfile} onBack={handleBack} />}
       {activeGame === 'stickers' && <StickerBook stars={stars} onBack={handleBack} />}
       
@@ -213,6 +216,9 @@ export default function App() {
       {activeGame === 'drawshapes' && <DrawShapes onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
       {activeGame === 'moon' && <MoonPhases onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
       {activeGame === 'coloring' && <Coloring onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
+      {activeGame === 'guesssound' && <GuessSound onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
+      {activeGame === 'simplemath' && <SimpleMath onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
+      {activeGame === 'tashkeel' && <ArabicTashkeel onBack={handleBack} onWin={handleWin} />} {/* +++ أضيف بناءً على طلبك +++ */}
     </div>
   );
 }
