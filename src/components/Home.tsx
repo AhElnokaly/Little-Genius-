@@ -45,12 +45,13 @@ export default function Home({ onSelect, profileName, isBirthday, avatar = '👦
       title: 'الحروف والأرقام 🔢',
       games: [
         { id: 'arabic', title: 'حروف عربي', icon: 'أ', color: 'bg-teal-400' },
-        { id: 'tashkeel', title: 'تشكيل الحروف', icon: 'َُِ', color: 'bg-indigo-400' }, // +++ أضيف بناءً على طلبك +++
+        { id: 'tashkeel', title: 'تشكيل الحروف', icon: 'َُِ', color: 'bg-indigo-400' },
         { id: 'english', title: 'حروف English', icon: 'A', color: 'bg-rose-400' },
+        { id: 'letteranimal', title: 'حروف وحيوانات', icon: '🦁', color: 'bg-amber-500' }, // +++ أضيف بناءً على طلبك +++
         { id: 'numbers', title: 'أرقام 123', icon: '١', color: 'bg-sky-400' },
         { id: 'counting', title: 'عد الأشياء', icon: '🔢', color: 'bg-amber-400' },
         { id: 'lettermatch', title: 'توصيل حروف', icon: '🔤', color: 'bg-violet-400' },
-        { id: 'simplemath', title: 'حساب بسيط', icon: '➕', color: 'bg-fuchsia-400' }, // +++ أضيف بناءً على طلبك +++
+        { id: 'simplemath', title: 'حساب بسيط', icon: '➕', color: 'bg-fuchsia-400' },
       ]
     },
     {
@@ -73,6 +74,7 @@ export default function Home({ onSelect, profileName, isBirthday, avatar = '👦
         { id: 'draw', title: 'رسم حر', icon: '✨', color: 'bg-purple-400' },
         { id: 'drawshapes', title: 'ارسم شكل', icon: '✏️', color: 'bg-indigo-500' },
         { id: 'color', title: 'ألوان', icon: '🎨', color: 'bg-blue-400' },
+        { id: 'stickers', title: 'الملصقات', icon: '🖼️', color: 'bg-amber-400' }, // +++ أضيف بناءً على طلبك +++
         { id: 'coloring', title: 'تلوين', icon: '🖍️', color: 'bg-rose-400' },
         { id: 'sorter', title: 'أشكال', icon: '🧩', color: 'bg-orange-400' },
         { id: 'piano', title: 'بيانو', icon: '🎹', color: 'bg-pink-400' },
@@ -97,9 +99,7 @@ export default function Home({ onSelect, profileName, isBirthday, avatar = '👦
             </button>
           )}
         </div>
-        <button onClick={() => onSelect('stickers')} className="bg-white px-4 py-2 rounded-full shadow-md text-amber-500 flex gap-2 items-center border-2 border-amber-200 active:scale-95 transition-transform font-bold text-sm md:text-lg">
-          <ImageIcon size={24} /> الملصقات
-        </button>
+        {/* +++ تم نقل زر الملصقات إلى وسط الألعاب بناءً على طلبك +++ */}
       </div>
 
       {/* Greeting & Logo */}

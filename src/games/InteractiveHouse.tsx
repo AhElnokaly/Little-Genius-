@@ -22,20 +22,20 @@ export default function InteractiveHouse({ onBack, onWin }: InteractiveHouseProp
 
   // Clean Up State
   const [messyItems, setMessyItems] = useState([
-    { id: 1, emoji: '🧸', type: 'toy', x: 20, y: 70 },
-    { id: 2, emoji: '🚗', type: 'toy', x: 40, y: 80 },
-    { id: 3, emoji: '👕', type: 'clothes', x: 60, y: 75 },
-    { id: 4, emoji: '🧦', type: 'clothes', x: 80, y: 85 },
-    { id: 5, emoji: '⚽', type: 'toy', x: 30, y: 60 },
+    { id: 1, emoji: '🧸', type: 'toy', x: 20, y: 30 },
+    { id: 2, emoji: '🚗', type: 'toy', x: 40, y: 40 },
+    { id: 3, emoji: '👕', type: 'clothes', x: 60, y: 35 },
+    { id: 4, emoji: '🧦', type: 'clothes', x: 80, y: 45 },
+    { id: 5, emoji: '⚽', type: 'toy', x: 30, y: 20 },
   ]);
 
   // Laundry State
   const [laundryItems, setLaundryItems] = useState([
-    { id: 1, emoji: '👕', color: 'white', x: 20, y: 60 },
-    { id: 2, emoji: '👗', color: 'color', x: 40, y: 70 },
-    { id: 3, emoji: '🧦', color: 'white', x: 60, y: 65 },
-    { id: 4, emoji: '👖', color: 'color', x: 80, y: 75 },
-    { id: 5, emoji: '👚', color: 'color', x: 50, y: 80 },
+    { id: 1, emoji: '👕', color: 'white', x: 20, y: 20 },
+    { id: 2, emoji: '👗', color: 'color', x: 40, y: 30 },
+    { id: 3, emoji: '🧦', color: 'white', x: 60, y: 25 },
+    { id: 4, emoji: '👖', color: 'color', x: 80, y: 35 },
+    { id: 5, emoji: '👚', color: 'color', x: 50, y: 40 },
   ]);
 
   const speak = (text: string) => {
@@ -92,7 +92,7 @@ export default function InteractiveHouse({ onBack, onWin }: InteractiveHouseProp
   return (
     <div className={`w-full h-full relative transition-colors duration-1000 overflow-hidden ${mode === 'explore' && !lightOn ? 'bg-slate-900' : 'bg-amber-50'}`}>
       <TutorialHand show={showTutorial} y={100} action="tap" />
-      <button onClick={onBack} className="absolute top-6 left-6 z-50 bg-white/80 backdrop-blur p-4 rounded-full shadow-lg">
+      <button onClick={onBack} className="absolute top-6 left-6 z-[100] bg-white/80 backdrop-blur p-4 rounded-full shadow-lg hover:bg-gray-100 active:scale-95 transition-all">
         <ArrowLeft size={32} className="text-slate-800" />
       </button>
 

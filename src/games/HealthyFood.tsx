@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import TutorialHand from '../components/TutorialHand';
+import { speak } from '../utils/audio'; // +++ أضيف بناءً على طلبك +++
 
 interface HealthyFoodProps {
   onBack: () => void;
-  onWin?: () => void;
+  onWin?: (stars?: number) => void;
+  difficulty?: 'easy' | 'medium' | 'hard'; // +++ أضيف بناءً على طلبك +++
 }
 
 const FOODS = [
@@ -22,11 +24,13 @@ const FOODS = [
   { id: 'f10', name: 'برجر', emoji: '🍔', isHealthy: false },
 ];
 
-export default function HealthyFood({ onBack, onWin }: HealthyFoodProps) {
+export default function HealthyFood({ onBack, onWin, difficulty = 'medium' }: HealthyFoodProps) {
   const [level, setLevel] = useState(1);
   const [currentFood, setCurrentFood] = useState<any>(null);
   const [score, setScore] = useState(0);
   const [showTutorial, setShowTutorial] = useState(true);
+
+  const targetScore = difficulty === 'easy' ? 3 : difficulty === 'medium' ? 5 : 7; // +++ أضيف بناءً على طلبك +++
 
   useEffect(() => {
     nextFood();
@@ -36,16 +40,6 @@ export default function HealthyFood({ onBack, onWin }: HealthyFoodProps) {
     const randomFood = FOODS[Math.floor(Math.random() * FOODS.length)];
     setCurrentFood(randomFood);
     speak(randomFood.name);
-  };
-
-  const speak = (text: string) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'ar-EG';
-      utterance.rate = 0.8;
-      window.speechSynthesis.speak(utterance);
-    }
   };
 
   const playSound = (type: 'correct' | 'incorrect') => {
@@ -81,8 +75,8 @@ export default function HealthyFood({ onBack, onWin }: HealthyFoodProps) {
       playSound('correct');
       const newScore = score + 1;
       setScore(newScore);
-      if (newScore % 5 === 0) {
-        if (onWin) onWin();
+      if (newScore % targetScore === 0) { // +++ أضيف بناءً على طلبك +++
+        if (onWin) onWin(difficulty === 'hard' ? 3 : difficulty === 'medium' ? 2 : 1); // +++ أضيف بناءً على طلبك +++
         confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
         setLevel(l => l + 1);
       } else {
@@ -97,7 +91,7 @@ export default function HealthyFood({ onBack, onWin }: HealthyFoodProps) {
   return (
     <div className="w-full h-full relative bg-lime-50 flex flex-col items-center p-4">
       <TutorialHand show={showTutorial} y={150} action="tap" />
-      <button onClick={onBack} className="absolute top-6 left-6 z-50 bg-white p-4 rounded-full shadow-lg">
+      <button onClick={onBack} className="absolute top-6 left-6 z-[100] bg-white p-4 rounded-full shadow-lg hover:bg-gray-100 active:scale-95 transition-all">
         <ArrowLeft size={32} className="text-lime-800" />
       </button>
 

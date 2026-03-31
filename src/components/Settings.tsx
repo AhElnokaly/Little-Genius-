@@ -5,27 +5,31 @@ export interface UserProfile {
   name: string;
   dob: string;
   lockEnabled: boolean;
-  playTimeLimit?: number; // +++ أضيف بناءً على طلبك +++
-  avatar?: string; // +++ أضيف بناءً على طلبك +++
+  playTimeLimit?: number;
+  avatar?: string;
+  difficulty?: 'easy' | 'medium' | 'hard'; // +++ أضيف بناءً على طلبك +++
+  stats?: Record<string, { played: number; stars: number }>; // +++ أضيف بناءً على طلبك +++
 }
 
 interface SettingsProps {
   profile: UserProfile;
   onSave: (p: UserProfile) => void;
   onBack: () => void;
+  onOpenDashboard?: () => void; // +++ أضيف بناءً على طلبك +++
 }
 
-const AVATARS = ['👦', '👧', '🐶', '🐱', '🦁', '🐯', '🐰', '🐼', '🦊', '🐸']; // +++ أضيف بناءً على طلبك +++
+const AVATARS = ['👦', '👧', '🐶', '🐱', '🦁', '🐯', '🐰', '🐼', '🦊', '🐸'];
 
-export default function Settings({ profile, onSave, onBack }: SettingsProps) {
+export default function Settings({ profile, onSave, onBack, onOpenDashboard }: SettingsProps) {
   const [name, setName] = useState(profile.name);
   const [dob, setDob] = useState(profile.dob);
   const [lockEnabled, setLockEnabled] = useState(profile.lockEnabled);
-  const [playTimeLimit, setPlayTimeLimit] = useState(profile.playTimeLimit || 0); // +++ أضيف بناءً على طلبك +++
-  const [avatar, setAvatar] = useState(profile.avatar || '👦'); // +++ أضيف بناءً على طلبك +++
+  const [playTimeLimit, setPlayTimeLimit] = useState(profile.playTimeLimit || 0);
+  const [avatar, setAvatar] = useState(profile.avatar || '👦');
+  const [difficulty, setDifficulty] = useState<'easy' | 'medium' | 'hard'>(profile.difficulty || 'medium'); // +++ أضيف بناءً على طلبك +++
 
   const handleSave = () => {
-    onSave({ name, dob, lockEnabled, playTimeLimit, avatar }); // +++ أضيف بناءً على طلبك +++
+    onSave({ ...profile, name, dob, lockEnabled, playTimeLimit, avatar, difficulty }); // +++ أضيف بناءً على طلبك +++
     onBack();
   };
 
@@ -96,6 +100,27 @@ export default function Settings({ profile, onSave, onBack }: SettingsProps) {
               dir="ltr"
             />
           </div>
+
+          {/* +++ أضيف بناءً على طلبك: مستوى الصعوبة +++ */}
+          <div className="bg-slate-50 border-2 border-slate-200 p-4 rounded-2xl">
+            <label className="block text-lg font-bold text-slate-700 mb-2">مستوى الصعوبة</label>
+            <div className="flex gap-2">
+              <button onClick={() => setDifficulty('easy')} className={`flex-1 py-2 rounded-xl font-bold transition-colors ${difficulty === 'easy' ? 'bg-green-500 text-white' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'}`}>سهل</button>
+              <button onClick={() => setDifficulty('medium')} className={`flex-1 py-2 rounded-xl font-bold transition-colors ${difficulty === 'medium' ? 'bg-yellow-500 text-white' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'}`}>متوسط</button>
+              <button onClick={() => setDifficulty('hard')} className={`flex-1 py-2 rounded-xl font-bold transition-colors ${difficulty === 'hard' ? 'bg-red-500 text-white' : 'bg-slate-200 text-slate-600 hover:bg-slate-300'}`}>صعب</button>
+            </div>
+          </div>
+
+          {/* +++ أضيف بناءً على طلبك: لوحة متابعة الآباء +++ */}
+          {onOpenDashboard && (
+            <button 
+              onClick={onOpenDashboard}
+              className="w-full py-3 mt-2 bg-indigo-100 text-indigo-700 rounded-2xl text-lg font-bold flex items-center justify-center gap-2 hover:bg-indigo-200 border-2 border-indigo-200 transition-colors"
+            >
+              📊 لوحة متابعة الآباء
+            </button>
+          )}
+
           <button 
             onClick={handleSave} 
             className="w-full py-4 mt-4 bg-sky-500 text-white rounded-2xl text-xl font-bold flex items-center justify-center gap-2 hover:bg-sky-600 shadow-lg active:scale-95 transition-transform"
