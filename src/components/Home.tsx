@@ -46,6 +46,7 @@ export default function Home({ onSelect, profileName, isBirthday, avatar = '👦
       games: [
         { id: 'arabic', title: 'حروف عربي', icon: 'أ', color: 'bg-teal-400' },
         { id: 'tashkeel', title: 'تشكيل الحروف', icon: 'َُِ', color: 'bg-indigo-400' },
+        { id: 'wordbuilder', title: 'تكوين الكلمات', icon: '📝', color: 'bg-emerald-500' }, // +++ أضيف بناءً على طلبك +++
         { id: 'english', title: 'حروف English', icon: 'A', color: 'bg-rose-400' },
         { id: 'letteranimal', title: 'حروف وحيوانات', icon: '🦁', color: 'bg-amber-500' }, // +++ أضيف بناءً على طلبك +++
         { id: 'numbers', title: 'أرقام 123', icon: '١', color: 'bg-sky-400' },

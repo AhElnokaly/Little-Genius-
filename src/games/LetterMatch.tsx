@@ -184,7 +184,7 @@ export default function LetterMatch({ onBack, onWin }: LetterMatchProps) {
           {leftItems.map(item => (
             <motion.button
               key={`l-${item.id}`}
-              ref={el => leftRefs.current[item.id] = el}
+              ref={el => { leftRefs.current[item.id] = el; }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleLeftClick(item)}
@@ -204,7 +204,7 @@ export default function LetterMatch({ onBack, onWin }: LetterMatchProps) {
           {rightItems.map(item => (
             <motion.button
               key={`r-${item.id}`}
-              ref={el => rightRefs.current[item.id] = el}
+              ref={el => { rightRefs.current[item.id] = el; }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => handleRightClick(item)}

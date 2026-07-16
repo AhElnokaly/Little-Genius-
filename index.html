@@ -8,6 +8,77 @@
     <link rel="icon" type="image/svg+xml" href="/icon-192.svg" />
     <link rel="apple-touch-icon" href="/icon-192.png" />
     <title>عبقري الصغير</title>
+    <script>
+      // Global Service Worker and cache purging to prevent stale cached white screen
+      try {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for (var i = 0; i < registrations.length; i++) {
+              registrations[i].unregister();
+            }
+            if (registrations.length > 0) {
+              console.log('Unregistered active service workers.');
+              try {
+                if ('caches' in window) {
+                  caches.keys().then(function(keys) {
+                    keys.forEach(function(key) {
+                      caches.delete(key);
+                    });
+                  });
+                }
+              } catch (cacheErr) {
+                console.error('Caches access failed:', cacheErr);
+              }
+            }
+          }).catch(function(err) {
+            console.error('Service Worker unregistration failed:', err);
+          });
+        }
+      } catch (swErr) {
+        console.error('Service Worker access failed:', swErr);
+      }
+
+      // Global error reporting to catch white screen immediately at boot
+      window.addEventListener('error', function(e) {
+        var errDiv = document.createElement('div');
+        errDiv.style.position = 'fixed';
+        errDiv.style.top = '0';
+        errDiv.style.left = '0';
+        errDiv.style.width = '100vw';
+        errDiv.style.height = '100vh';
+        errDiv.style.backgroundColor = '#fff0f0';
+        errDiv.style.color = '#c00';
+        errDiv.style.padding = '20px';
+        errDiv.style.zIndex = '999999';
+        errDiv.style.overflow = 'auto';
+        errDiv.style.fontFamily = 'monospace';
+        errDiv.style.direction = 'ltr';
+        errDiv.innerHTML = '<h1>Boot Error Detected!</h1>' +
+          '<p><strong>Message:</strong> ' + e.message + '</p>' +
+          '<p><strong>File:</strong> ' + e.filename + ':' + e.lineno + ':' + e.colno + '</p>' +
+          '<pre>' + (e.error ? e.error.stack : 'No stack trace available') + '</pre>';
+        document.documentElement.appendChild(errDiv);
+      });
+      window.addEventListener('unhandledrejection', function(e) {
+        var errDiv = document.createElement('div');
+        errDiv.style.position = 'fixed';
+        errDiv.style.top = '0';
+        errDiv.style.left = '0';
+        errDiv.style.width = '100vw';
+        errDiv.style.height = '100vh';
+        errDiv.style.backgroundColor = '#fff0e0';
+        errDiv.style.color = '#a50';
+        errDiv.style.padding = '20px';
+        errDiv.style.zIndex = '999999';
+        errDiv.style.overflow = 'auto';
+        errDiv.style.fontFamily = 'monospace';
+        errDiv.style.direction = 'ltr';
+        errDiv.innerHTML = '<h1>Unhandled Promise Rejection!</h1>' +
+          '<p><strong>Reason:</strong> ' + e.reason + '</p>' +
+          '<pre>' + (e.reason && e.reason.stack ? e.reason.stack : 'No stack trace available') + '</pre>';
+        document.documentElement.appendChild(errDiv);
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
