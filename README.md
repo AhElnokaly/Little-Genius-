@@ -45,3 +45,11 @@
 - **Audio Engine:** Android Native `TextToSpeech` + `MediaPlayer` (ملفات صوتية حقيقية في `res/raw`)
 - **Persistence:** Repository pattern with SharedPreferences & JSON storage
 - **Build System:** Gradle (Kotlin DSL) مع Version Catalog (`libs.versions.toml`)
+- **CI/CD & Releases:** GitHub Actions Workflow لتصدير ملفات APK موقّعة وقابلة للتحديث التراكمي على الهواتف مباشرة (`.github/workflows/build-apk.yml`)
+
+## 📦 بناء وتصدير ملف APK قابل للتحديث (CI/CD)
+
+يحتوي المشروع على Workflow متكامل وجاهز على GitHub Actions لبناء وتوقيع ونشر ملفات APK تلقائياً وبشكل قابل للتحديث فوق النسخ السابقة دون فقدان بيانات الطفل:
+- مسار الـ Workflow: `.github/workflows/build-apk.yml`
+- دليل الاستخدام الكامل وإعداد الـ Secrets: راجع [دليل تصدير الـ APK](docs/GITHUB_WORKFLOW_GUIDE.md)
+
