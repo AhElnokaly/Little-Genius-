@@ -4,61 +4,43 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
-import android.media.MediaPlayer
-import android.media.SoundPool
 import android.speech.tts.TextToSpeech
 import com.example.littlegenius.R
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import java.util.Locale
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentLinkedQueue
 
 class SoundManager(private val context: Context) : TextToSpeech.OnInitListener {
+    private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
     private var tts: TextToSpeech? = null
     private var isTtsReady = false
-    private var soundPool: SoundPool? = null
-    private val loadedSoundIds = ConcurrentHashMap<Int, Boolean>()
 
-    // SoundPool resource IDs
-    private var popSoundId = 0
-    private var winSoundId = 0
-    private var chimeSoundId = 0
-    private var kickSoundId = 0
-    private var snareSoundId = 0
-    private var cymbalSoundId = 0
-    private var tambourineSoundId = 0
+    // Cache of decoded PCM ShortArrays for instant, zero-latency playback without CCodec/SoundPool overhead
+    private val pcmCache = ConcurrentHashMap<Int, ShortArray>()
+
+    // Track pool management to prevent AudioTrack leakage and keep memory minimal
+    private val activeTracks = ConcurrentLinkedQueue<AudioTrack>()
+    private val maxActiveTracks = 8
 
     init {
-        try {
-            val audioAttributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_GAME)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-
-            soundPool = SoundPool.Builder()
-                .setMaxStreams(10)
-                .setAudioAttributes(audioAttributes)
-                .build()
-
-            soundPool?.setOnLoadCompleteListener { _, sampleId, status ->
-                if (status == 0) {
-                    loadedSoundIds[sampleId] = true
-                }
+        // Pre-load common short UI and drum sound PCM data on background thread
+        scope.launch(Dispatchers.IO) {
+            val commonSounds = listOf(
+                R.raw.pop,
+                R.raw.chime,
+                R.raw.win,
+                R.raw.drum_kick,
+                R.raw.drum_snare,
+                R.raw.drum_cymbal,
+                R.raw.drum_tambourine
+            )
+            for (resId in commonSounds) {
+                getPcm(resId)
             }
-
-            soundPool?.let { sp ->
-                try {
-                    popSoundId = sp.load(context, R.raw.pop, 1)
-                    winSoundId = sp.load(context, R.raw.win, 1)
-                    chimeSoundId = sp.load(context, R.raw.chime, 1)
-                    kickSoundId = sp.load(context, R.raw.drum_kick, 1)
-                    snareSoundId = sp.load(context, R.raw.drum_snare, 1)
-                    cymbalSoundId = sp.load(context, R.raw.drum_cymbal, 1)
-                    tambourineSoundId = sp.load(context, R.raw.drum_tambourine, 1)
-                } catch (_: Exception) { }
-            }
-        } catch (_: Exception) { }
+        }
 
         try {
             tts = TextToSpeech(context.applicationContext, this)
@@ -105,65 +87,147 @@ class SoundManager(private val context: Context) : TextToSpeech.OnInitListener {
         playChimeTone()
     }
 
-    fun playRawSound(resId: Int) {
-        CoroutineScope(Dispatchers.Main).launch {
-            try {
-                val player = MediaPlayer.create(context.applicationContext, resId)
-                if (player != null) {
-                    player.setVolume(1.0f, 1.0f)
-                    player.setOnCompletionListener { mp ->
-                        try { mp.release() } catch (_: Exception) { }
+    private fun getPcm(resId: Int): ShortArray? {
+        pcmCache[resId]?.let { return it }
+        return try {
+            context.resources.openRawResource(resId).use { input ->
+                val bytes = input.readBytes()
+                if (bytes.size < 44) return null
+                var dataOffset = -1
+                var dataSize = 0
+                for (i in 0..bytes.size - 8) {
+                    if (bytes[i] == 'd'.code.toByte() &&
+                        bytes[i + 1] == 'a'.code.toByte() &&
+                        bytes[i + 2] == 't'.code.toByte() &&
+                        bytes[i + 3] == 'a'.code.toByte()
+                    ) {
+                        dataOffset = i + 8
+                        dataSize = (bytes[i + 4].toInt() and 0xFF) or
+                                ((bytes[i + 5].toInt() and 0xFF) shl 8) or
+                                ((bytes[i + 6].toInt() and 0xFF) shl 16) or
+                                ((bytes[i + 7].toInt() and 0xFF) shl 24)
+                        break
                     }
-                    player.start()
-                } else {
-                    playPopTone()
                 }
-            } catch (_: Exception) {
+                if (dataOffset == -1 || dataOffset >= bytes.size) return null
+                val actualBytes = minOf(dataSize, bytes.size - dataOffset)
+                val numShorts = actualBytes / 2
+                val shortArray = ShortArray(numShorts)
+                ByteBuffer.wrap(bytes, dataOffset, numShorts * 2)
+                    .order(ByteOrder.LITTLE_ENDIAN)
+                    .asShortBuffer()
+                    .get(shortArray)
+                pcmCache[resId] = shortArray
+                shortArray
+            }
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun playPcm(
+        pcm: ShortArray,
+        sampleRate: Int = 44100,
+        volume: Float = 1.0f
+    ) {
+        scope.launch {
+            try {
+                // Clean up excess active tracks to prevent resource exhaustion
+                while (activeTracks.size >= maxActiveTracks) {
+                    val oldTrack = activeTracks.poll()
+                    try {
+                        oldTrack?.stop()
+                        oldTrack?.release()
+                    } catch (_: Exception) { }
+                }
+
+                val audioAttributes = AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build()
+
+                val audioFormat = AudioFormat.Builder()
+                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                    .setSampleRate(sampleRate)
+                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
+                    .build()
+
+                val bufferSize = pcm.size * 2
+                val track = AudioTrack.Builder()
+                    .setAudioAttributes(audioAttributes)
+                    .setAudioFormat(audioFormat)
+                    .setBufferSizeInBytes(bufferSize)
+                    .setTransferMode(AudioTrack.MODE_STATIC)
+                    .build()
+
+                track.write(pcm, 0, pcm.size)
+                track.setVolume(volume.coerceIn(0.0f, 1.0f))
+                activeTracks.add(track)
+                track.play()
+
+                // Calculate duration in ms + small margin
+                val durationMs = ((pcm.size.toDouble() / sampleRate) * 1000).toLong() + 50
+                delay(durationMs)
+                try {
+                    track.stop()
+                    track.release()
+                } catch (_: Exception) { }
+                activeTracks.remove(track)
+            } catch (_: Exception) { }
+        }
+    }
+
+    fun playRawSound(resId: Int) {
+        scope.launch {
+            val pcm = getPcm(resId)
+            if (pcm != null) {
+                playPcm(pcm)
+            } else {
                 playPopTone()
             }
         }
     }
 
     fun playPopSound() {
-        if (popSoundId != 0 && loadedSoundIds[popSoundId] == true) {
-            val stream = soundPool?.play(popSoundId, 1.0f, 1.0f, 1, 0, 1.0f) ?: 0
-            if (stream == 0) playPopTone()
+        val pcm = pcmCache[R.raw.pop]
+        if (pcm != null) {
+            playPcm(pcm)
         } else {
             playRawSound(R.raw.pop)
         }
     }
 
     fun playWinFanfare() {
-        if (winSoundId != 0 && loadedSoundIds[winSoundId] == true) {
-            val stream = soundPool?.play(winSoundId, 1.0f, 1.0f, 1, 0, 1.0f) ?: 0
-            if (stream == 0) playWinTone()
+        val pcm = pcmCache[R.raw.win]
+        if (pcm != null) {
+            playPcm(pcm)
         } else {
             playRawSound(R.raw.win)
         }
     }
 
     fun playChime() {
-        if (chimeSoundId != 0 && loadedSoundIds[chimeSoundId] == true) {
-            val stream = soundPool?.play(chimeSoundId, 1.0f, 1.0f, 1, 0, 1.0f) ?: 0
-            if (stream == 0) playChimeTone()
+        val pcm = pcmCache[R.raw.chime]
+        if (pcm != null) {
+            playPcm(pcm)
         } else {
             playRawSound(R.raw.chime)
         }
     }
 
     fun playDrum(type: String) {
-        val soundId = when (type) {
-            "kick" -> kickSoundId
-            "snare" -> snareSoundId
-            "cymbal" -> cymbalSoundId
-            "tambourine" -> tambourineSoundId
-            else -> kickSoundId
+        val resId = when (type) {
+            "kick" -> R.raw.drum_kick
+            "snare" -> R.raw.drum_snare
+            "cymbal" -> R.raw.drum_cymbal
+            "tambourine" -> R.raw.drum_tambourine
+            else -> R.raw.drum_kick
         }
-        if (soundId != 0 && loadedSoundIds[soundId] == true) {
-            val stream = soundPool?.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f) ?: 0
-            if (stream == 0) playDrumSynth(type)
+        val pcm = pcmCache[resId]
+        if (pcm != null) {
+            playPcm(pcm)
         } else {
-            playDrumSynth(type)
+            playRawSound(resId)
         }
     }
 
@@ -180,27 +244,17 @@ class SoundManager(private val context: Context) : TextToSpeech.OnInitListener {
     }
 
     fun playWinTone() {
-        CoroutineScope(Dispatchers.Default).launch {
+        scope.launch {
             val notes = listOf(523.25, 659.25, 783.99, 1046.50)
             for (freq in notes) {
                 synthesizeTone(freq, 160, type = "piano")
-                kotlinx.coroutines.delay(120)
+                delay(120)
             }
         }
     }
 
-    private fun playDrumSynth(type: String) {
-        when (type) {
-            "kick" -> synthesizeTone(120.0, 180, type = "kick")
-            "snare" -> synthesizeTone(320.0, 140, type = "snare")
-            "cymbal" -> synthesizeTone(1200.0, 220, type = "cymbal")
-            "tambourine" -> synthesizeTone(950.0, 150, type = "chime")
-            else -> synthesizeTone(150.0, 150, type = "kick")
-        }
-    }
-
     private fun synthesizeTone(freqHz: Double, durationMs: Int, type: String = "piano") {
-        CoroutineScope(Dispatchers.Default).launch {
+        scope.launch {
             try {
                 val sampleRate = 44100
                 val numSamples = (sampleRate * (durationMs / 1000.0)).toInt()
@@ -214,7 +268,6 @@ class SoundManager(private val context: Context) : TextToSpeech.OnInitListener {
                     }
                     val sample = when (type) {
                         "pop" -> {
-                            // Descending frequency sweep
                             val curFreq = freqHz * (1.2 - progress * 0.5)
                             Math.sin(2.0 * Math.PI * curFreq * time) * envelope * 0.8
                         }
@@ -236,42 +289,25 @@ class SoundManager(private val context: Context) : TextToSpeech.OnInitListener {
                     buffer[i] = (sample * Short.MAX_VALUE).toInt().coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
                 }
 
-                val audioAttributes = AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_GAME)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .build()
-
-                val audioFormat = AudioFormat.Builder()
-                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                    .setSampleRate(sampleRate)
-                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
-                    .build()
-
-                val track = AudioTrack.Builder()
-                    .setAudioAttributes(audioAttributes)
-                    .setAudioFormat(audioFormat)
-                    .setBufferSizeInBytes(buffer.size * 2)
-                    .setTransferMode(AudioTrack.MODE_STATIC)
-                    .build()
-
-                track.write(buffer, 0, buffer.size)
-                track.play()
-                kotlinx.coroutines.delay(durationMs.toLong() + 40)
-                try {
-                    track.stop()
-                    track.release()
-                } catch (_: Exception) { }
+                playPcm(buffer, sampleRate = sampleRate)
             } catch (_: Exception) { }
         }
     }
 
     fun release() {
         try {
+            scope.cancel()
             tts?.stop()
             tts?.shutdown()
             tts = null
-            soundPool?.release()
-            soundPool = null
+            while (activeTracks.isNotEmpty()) {
+                val track = activeTracks.poll()
+                try {
+                    track?.stop()
+                    track?.release()
+                } catch (_: Exception) { }
+            }
+            pcmCache.clear()
         } catch (_: Exception) { }
     }
 }
