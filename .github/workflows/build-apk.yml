@@ -46,8 +46,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - name: Accept Android SDK Licenses
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses 2>/dev/null || true
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -136,8 +137,17 @@ jobs:
       - name: Sign & Align Release APK
         id: sign
         run: |
-          BUILD_TOOLS_DIR=$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)
-          echo "Using Android Build Tools at: $BUILD_TOOLS_DIR"
+          ANDROID_SDK_ROOT_DIR="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          ZIPALIGN_BIN=$(which zipalign 2>/dev/null || find "$ANDROID_SDK_ROOT_DIR/build-tools" -name zipalign 2>/dev/null | sort -V | tail -n 1)
+          APKSIGNER_BIN=$(which apksigner 2>/dev/null || find "$ANDROID_SDK_ROOT_DIR/build-tools" -name apksigner 2>/dev/null | sort -V | tail -n 1)
+
+          if [ -z "$ZIPALIGN_BIN" ] || [ -z "$APKSIGNER_BIN" ]; then
+            echo "Error: zipalign or apksigner not found in Android SDK tools."
+            exit 1
+          fi
+
+          echo "Using zipalign at: $ZIPALIGN_BIN"
+          echo "Using apksigner at: $APKSIGNER_BIN"
 
           RAW_APK=$(find app/build/outputs/apk/release -name "*.apk" | head -n 1)
           if [ -z "$RAW_APK" ]; then
@@ -152,10 +162,10 @@ jobs:
           FINAL_APK="$OUTPUT_DIR/LittleGenius-v${{ env.VERSION_NAME }}-build${{ env.VERSION_CODE }}.apk"
 
           # 1. Zipalign APK (4-byte alignment)
-          "$BUILD_TOOLS_DIR/zipalign" -v -p 4 "$RAW_APK" "$ALIGNED_APK"
+          "$ZIPALIGN_BIN" -v -p 4 "$RAW_APK" "$ALIGNED_APK"
 
           # 2. Sign APK with apksigner (v1, v2, and v3 schemes for full update compatibility)
-          "$BUILD_TOOLS_DIR/apksigner" sign \
+          "$APKSIGNER_BIN" sign \
             --ks "${{ env.KEYSTORE_PATH }}" \
             --ks-pass "pass:${{ env.KS_PASSWORD }}" \
             --ks-key-alias "${{ env.KS_ALIAS }}" \
@@ -168,7 +178,7 @@ jobs:
 
           # 3. Verify signature
           echo "=== Verifying APK Signature ==="
-          "$BUILD_TOOLS_DIR/apksigner" verify --verbose "$FINAL_APK"
+          "$APKSIGNER_BIN" verify --verbose "$FINAL_APK"
 
           # 4. Get File Size and Details
           APK_SIZE=$(du -h "$FINAL_APK" | cut -f1)
