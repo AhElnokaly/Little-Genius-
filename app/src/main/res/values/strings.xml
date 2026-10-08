@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ألعاب طفلي الذكي</string>
+    <string name="settings_title">الإعدادات</string>
+    <string name="child_name_label">اسم الطفل</string>
+    <string name="avatar_label">اختر شخصيتك</string>
+    <string name="birth_date_label">تاريخ الميلاد</string>
+    <string name="exit_lock_label">قفل الخروج من الألعاب</string>
+    <string name="play_time_label">وقت اللعب المسموح (بالدقائق)</string>
+    <string name="play_time_hint">ضع 0 لإلغاء المؤقت</string>
+    <string name="difficulty_label">مستوى الصعوبة</string>
+    <string name="save_button">حفظ التغييرات</string>
+    <string name="parents_dashboard_title">لوحة متابعة الآباء</string>
+    <string name="total_games_played">إجمالي الألعاب</string>
+    <string name="total_stars_earned">النجوم المكتسبة</string>
+    <string name="parental_gate_title">للوالدين فقط</string>
+    <string name="parental_gate_prompt">الرجاء حل المسألة للمتابعة:</string>
+    <string name="time_locked_title">انتهى وقت اللعب لليوم!</string>
+    <string name="time_locked_subtitle">حان وقت أخذ استراحة واللعب مع العائلة</string>
+    <string name="unlock_button">فتح القفل (للأهل)</string>
+    <string name="back">رجوع</string>
+    <string name="clear">مسح</string>
+</resources>

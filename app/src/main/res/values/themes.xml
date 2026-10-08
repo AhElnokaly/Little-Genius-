@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.LittleGenius" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#BAE6FD</item>
+        <item name="android:navigationBarColor">#F0F9FF</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_sky">#0284C7</color>
+    <color name="primary_sky_light">#E0F2FE</color>
+    <color name="bg_sky">#F0F9FF</color>
+    <color name="accent_yellow">#FBBF24</color>
+</resources>
