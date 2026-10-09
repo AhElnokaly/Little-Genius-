@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:translateX="0"
+        android:translateY="0">
+        <!-- Main Golden Star -->
+        <path
+            android:fillColor="#FBBF24"
+            android:pathData="M54,26 L61,42 L78,43 L65,54 L69,71 L54,62 L39,71 L43,54 L30,43 L47,42 Z" />
+        <!-- Shiny highlight on star -->
+        <path
+            android:fillColor="#FDE68A"
+            android:pathData="M54,26 L61,42 L54,50 L47,42 Z" />
+        <!-- Little Sparkle Top-Right -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M75,26 L77,32 L83,34 L77,36 L75,42 L73,36 L67,34 L73,32 Z" />
+        <!-- Little Sparkle Bottom-Left -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M33,65 L34,69 L38,70 L34,71 L33,75 L32,71 L28,70 L32,69 Z" />
+        <!-- Cute Smile and Eyes on Star -->
+        <path
+            android:fillColor="#1E293B"
+            android:pathData="M48,48 a2,2 0 1,0 0.01,0 Z" />
+        <path
+            android:fillColor="#1E293B"
+            android:pathData="M60,48 a2,2 0 1,0 0.01,0 Z" />
+        <!-- Smiling mouth -->
+        <path
+            android:strokeColor="#1E293B"
+            android:strokeWidth="1.5"
+            android:strokeLineCap="round"
+            android:fillColor="#00000000"
+            android:pathData="M50,54 Q54,58 58,54" />
+    </group>
+</vector>
