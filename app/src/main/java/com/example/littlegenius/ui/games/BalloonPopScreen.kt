@@ -5,6 +5,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +30,7 @@ import com.example.littlegenius.ui.theme.Emerald500
 import com.example.littlegenius.ui.theme.SkyBlue200
 import com.example.littlegenius.ui.theme.SkyBlue600
 import kotlinx.coroutines.delay
+import kotlin.math.sin
 import kotlin.random.Random
 
 data class BalloonData(
@@ -36,8 +39,16 @@ data class BalloonData(
     val speakWord: String,
     val xRatio: Float,
     val color: Color,
-    val initialY: Float = 1.1f,
+    val initialY: Float = 1.15f,
     val speed: Float = 0.003f
+)
+
+data class PopSpark(
+    val id: Int,
+    val xRatio: Float,
+    val yRatio: Float,
+    val color: Color,
+    var age: Int = 0
 )
 
 data class BalloonLevel(
@@ -147,53 +158,71 @@ fun BalloonPopScreen(
     onPopSound: () -> Unit,
     onSpeak: (String) -> Unit = {}
 ) {
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        var currentLevelIndex by remember { mutableIntStateOf(0) }
-        val currentLevel = BALLOON_LEVELS[currentLevelIndex % BALLOON_LEVELS.size]
+    var currentLevelIndex by remember { mutableIntStateOf(0) }
+    val currentLevel = BALLOON_LEVELS[currentLevelIndex % BALLOON_LEVELS.size]
 
-        var poppedInLevel by remember(currentLevel) { mutableIntStateOf(0) }
-        val balloons = remember(currentLevel) { mutableStateListOf<BalloonData>() }
-        var nextId by remember { mutableIntStateOf(0) }
-        var lastPoppedWord by remember { mutableStateOf("") }
+    var poppedInLevel by remember(currentLevel) { mutableIntStateOf(0) }
+    val balloons = remember(currentLevel) { mutableStateListOf<BalloonData>() }
+    val sparks = remember { mutableStateListOf<PopSpark>() }
+    var nextId by remember { mutableIntStateOf(0) }
+    var sparkCounter by remember { mutableIntStateOf(0) }
+    var lastPoppedWord by remember { mutableStateOf("") }
 
-        LaunchedEffect(currentLevel) {
-            poppedInLevel = 0
-            balloons.clear()
-            onSpeak(currentLevel.description)
-            while (true) {
-                if (balloons.size < 7) {
-                    val pair = currentLevel.items.random()
-                    balloons.add(
-                        BalloonData(
-                            id = nextId++,
-                            text = pair.first,
-                            speakWord = pair.second,
-                            xRatio = Random.nextFloat() * 0.72f + 0.1f,
-                            color = BALLOON_COLORS.random(),
-                            speed = Random.nextFloat() * 0.002f + currentLevel.speedBase
-                        )
+    LaunchedEffect(currentLevel) {
+        poppedInLevel = 0
+        balloons.clear()
+        onSpeak(currentLevel.description)
+        while (true) {
+            if (balloons.size < 7) {
+                val pair = currentLevel.items.random()
+                balloons.add(
+                    BalloonData(
+                        id = nextId++,
+                        text = pair.first,
+                        speakWord = pair.second,
+                        xRatio = Random.nextFloat() * 0.72f + 0.1f,
+                        color = BALLOON_COLORS.random(),
+                        speed = Random.nextFloat() * 0.002f + currentLevel.speedBase
                     )
+                )
+            }
+            delay(currentLevel.spawnDelayMs)
+        }
+    }
+
+    // Animation frame for balloon physics & pop sparks
+    var tick by remember { mutableLongStateOf(0L) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            delay(16)
+            tick++
+            // Age and clean up pop sparks
+            if (sparks.isNotEmpty()) {
+                val sparkIter = sparks.listIterator()
+                while (sparkIter.hasNext()) {
+                    val s = sparkIter.next()
+                    s.age++
+                    if (s.age > 20) {
+                        sparkIter.remove()
+                    }
                 }
-                delay(currentLevel.spawnDelayMs)
             }
         }
+    }
 
-        // Animation frame
-        var tick by remember { mutableLongStateOf(0L) }
-        LaunchedEffect(Unit) {
-            while (true) {
-                delay(16)
-                tick++
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFE0F2FE))
-                .testTag("balloon_pop_screen")
-        ) {
-            Column(modifier = Modifier.fillMaxWidth().align(Alignment.TopCenter)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFE0F2FE))
+            .testTag("balloon_pop_screen")
+    ) {
+        // Arabic Header and Controls
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.TopCenter)
+            ) {
                 GameHeader(
                     title = "فرقع البالونات 🎈",
                     onBack = onBack,
@@ -243,16 +272,20 @@ fun BalloonPopScreen(
                     modifier = Modifier.padding(horizontal = 20.dp, vertical = 4.dp)
                 )
             }
+        }
 
+        // Sky Physics Container: Enforce LTR coordinates so balloons float identically regardless of system locale
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(top = 130.dp, bottom = 80.dp)
             ) {
-                val widthPx = constraints.maxWidth.toFloat()
-                val heightPx = constraints.maxHeight.toFloat()
+                val screenWidth = maxWidth
+                val screenHeight = maxHeight
                 val toRemove = mutableListOf<BalloonData>()
 
+                // Render Balloons
                 balloons.forEach { b ->
                     val elapsedTicks = (tick - b.id * 10).coerceAtLeast(0)
                     val currentYRatio = b.initialY - (elapsedTicks * b.speed)
@@ -260,28 +293,41 @@ fun BalloonPopScreen(
                     if (currentYRatio < -0.2f) {
                         toRemove.add(b)
                     } else {
-                        val balloonX = b.xRatio * widthPx
-                        val balloonY = currentYRatio * heightPx
+                        // Horizontal sinusoidal wobble as balloon floats upward
+                        val swayOffset = sin((tick + b.id * 15) * 0.06f) * 0.02f
+                        val effectiveXRatio = (b.xRatio + swayOffset).coerceIn(0.04f, 0.88f)
 
                         Box(
                             modifier = Modifier
                                 .offset(
-                                    x = (balloonX / (widthPx / maxWidth.value)).dp,
-                                    y = (balloonY / (heightPx / maxHeight.value)).dp
+                                    x = screenWidth * effectiveXRatio,
+                                    y = screenHeight * currentYRatio
                                 )
-                                .size(76.dp)
+                                .size(78.dp)
                                 .clip(CircleShape)
                                 .background(b.color)
-                                .border(2.dp, Color.White.copy(alpha = 0.8f), CircleShape)
-                                .clickable {
+                                .border(2.dp, Color.White.copy(alpha = 0.85f), CircleShape)
+                                .clickable(
+                                    interactionSource = remember { MutableInteractionSource() },
+                                    indication = null
+                                ) {
                                     onPopSound()
                                     onSpeak(b.speakWord)
                                     lastPoppedWord = b.speakWord
+                                    // Spawn pop spark particles
+                                    sparks.add(
+                                        PopSpark(
+                                            id = sparkCounter++,
+                                            xRatio = effectiveXRatio,
+                                            yRatio = currentYRatio,
+                                            color = b.color
+                                        )
+                                    )
                                     balloons.remove(b)
                                     poppedInLevel++
                                     if (poppedInLevel >= currentLevel.targetPops) {
                                         onSpeak("أحسنت! أكملت المستوى بنجاح")
-                                        onWin(1)
+                                        onWin(2)
                                         if (currentLevelIndex < BALLOON_LEVELS.size - 1) {
                                             currentLevelIndex++
                                         }
@@ -291,10 +337,11 @@ fun BalloonPopScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             Canvas(modifier = Modifier.fillMaxSize()) {
+                                // Balloon specular shine highlight
                                 drawCircle(
-                                    color = Color.White.copy(alpha = 0.45f),
-                                    radius = size.minDimension * 0.16f,
-                                    center = Offset(size.width * 0.32f, size.height * 0.32f)
+                                    color = Color.White.copy(alpha = 0.5f),
+                                    radius = size.minDimension * 0.18f,
+                                    center = Offset(size.width * 0.32f, size.height * 0.3f)
                                 )
                             }
                             Text(
@@ -308,9 +355,33 @@ fun BalloonPopScreen(
                 }
 
                 balloons.removeAll(toRemove)
-            }
 
-            // Bottom progress bar with word echo
+                // Render Pop Spark Particles
+                sparks.forEach { spark ->
+                    val sparkScale = 1f + (spark.age * 0.1f)
+                    val sparkAlpha = (1f - (spark.age / 20f)).coerceIn(0f, 1f)
+                    Box(
+                        modifier = Modifier
+                            .offset(
+                                x = screenWidth * spark.xRatio,
+                                y = screenHeight * spark.yRatio
+                            )
+                            .size(78.dp)
+                            .graphicsLayer {
+                                scaleX = sparkScale
+                                scaleY = sparkScale
+                                alpha = sparkAlpha
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("✨", fontSize = 42.sp)
+                    }
+                }
+            }
+        }
+
+        // Bottom progress bar with word echo (Arabic RTL)
+        CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
             Surface(
                 shape = CircleShape,
                 color = Color.White.copy(alpha = 0.96f),
@@ -318,9 +389,10 @@ fun BalloonPopScreen(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 20.dp)
+                    .border(1.5.dp, SkyBlue200, CircleShape)
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+                    modifier = Modifier.padding(horizontal = 22.dp, vertical = 10.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {

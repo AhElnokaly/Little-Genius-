@@ -39,6 +39,21 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          lfs: true
+
+      - name: Verify & Sanitize Image Resources
+        run: |
+          echo "Verifying drawable and mipmap PNG resources..."
+          # Check for corrupt or non-PNG files pretending to be .png (e.g., LFS pointers or empty files)
+          find app/src/main/res -type f -name "*.png" | while read -r img; do
+            if [ ! -s "$img" ]; then
+              echo "Warning: Empty image found, removing $img"
+              rm -f "$img"
+            elif ! head -c 8 "$img" | grep -q $'\x89PNG'; then
+              echo "Warning: Corrupted/non-PNG header in $img, removing"
+              rm -f "$img"
+            fi
+          done
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
