@@ -240,6 +240,44 @@ fun MainAppContent(
                     onSpeak = { soundManager.speak(it) }
                 )
             }
+            "phonics_hub" -> {
+                PhonicsHubScreen(
+                    starsCount = starsCount,
+                    onBack = { requestExitOrBack() },
+                    onWin = handleWin,
+                    onSpeak = { text, lang -> soundManager.speak(text, lang) }
+                )
+            }
+            "blending_train" -> {
+                PhonicsBlendingTrainScreen(
+                    starsCount = starsCount,
+                    onBack = { requestExitOrBack() },
+                    onWin = handleWin,
+                    onPopSound = { soundManager.playPopSound() },
+                    onWinSound = { soundManager.playWinFanfare() },
+                    onSpeak = { text, lang -> soundManager.speak(text, lang) }
+                )
+            }
+            "sound_hunt" -> {
+                PhonicsSoundHuntScreen(
+                    starsCount = starsCount,
+                    onBack = { requestExitOrBack() },
+                    onWin = handleWin,
+                    onPopSound = { soundManager.playPopSound() },
+                    onWinSound = { soundManager.playWinFanfare() },
+                    onSpeak = { text, lang -> soundManager.speak(text, lang) }
+                )
+            }
+            "letter_tracing" -> {
+                LetterTracingScreen(
+                    starsCount = starsCount,
+                    onBack = { requestExitOrBack() },
+                    onWin = handleWin,
+                    onPopSound = { soundManager.playPopSound() },
+                    onWinSound = { soundManager.playWinFanfare() },
+                    onSpeak = { text, lang -> soundManager.speak(text, lang) }
+                )
+            }
             "arabic" -> {
                 ArabicLettersScreen(
                     starsCount = starsCount,

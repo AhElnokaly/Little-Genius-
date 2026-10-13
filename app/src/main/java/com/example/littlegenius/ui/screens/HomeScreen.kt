@@ -31,6 +31,10 @@ val ALL_GAME_CATEGORIES = listOf(
     GameCategory(
         title = "الحروف والأرقام 🔢",
         games = listOf(
+            GameItem("phonics_hub", "أصوات الحروف & Phonics", "🔤", 0xFF6366F1),
+            GameItem("blending_train", "قطار دمج الأصوات", "🚂", 0xFF0284C7),
+            GameItem("sound_hunt", "صائد الأصوات", "🎯", 0xFFF59E0B),
+            GameItem("letter_tracing", "تتبع الحروف المضيئة", "✍️", 0xFF10B981),
             GameItem("arabic", "حروف عربي", "أ", 0xFF2DD4BF),
             GameItem("tashkeel", "تشكيل الحروف", "َُِ", 0xFF818CF8),
             GameItem("wordbuilder", "تكوين الكلمات", "📝", 0xFF10B981),

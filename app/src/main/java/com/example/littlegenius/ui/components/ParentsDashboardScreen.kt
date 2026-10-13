@@ -51,7 +51,11 @@ private val GAME_NAMES = mapOf(
     "tashkeel" to "تشكيل الحروف",
     "letteranimal" to "حروف وحيوانات",
     "wordbuilder" to "تكوين الكلمات",
-    "stickers" to "الملصقات"
+    "stickers" to "الملصقات",
+    "phonics_hub" to "أصوات الحروف & Phonics",
+    "blending_train" to "قطار دمج الأصوات",
+    "sound_hunt" to "صائد الأصوات",
+    "letter_tracing" to "تتبع الحروف المضيئة"
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -140,8 +144,10 @@ fun ParentsDashboardScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Domain Skills Breakdown
+            val phonicsPlayed = (profile.stats["phonics_hub"]?.played ?: 0) + (profile.stats["blending_train"]?.played ?: 0) +
+                    (profile.stats["sound_hunt"]?.played ?: 0) + (profile.stats["letter_tracing"]?.played ?: 0)
             val langPlayed = (profile.stats["arabic"]?.played ?: 0) + (profile.stats["tashkeel"]?.played ?: 0) +
-                    (profile.stats["wordbuilder"]?.played ?: 0) + (profile.stats["english"]?.played ?: 0) + (profile.stats["lettermatch"]?.played ?: 0)
+                    (profile.stats["wordbuilder"]?.played ?: 0) + (profile.stats["english"]?.played ?: 0) + (profile.stats["lettermatch"]?.played ?: 0) + phonicsPlayed
             val mathPlayed = (profile.stats["counting"]?.played ?: 0) + (profile.stats["simplemath"]?.played ?: 0) +
                     (profile.stats["numbers"]?.played ?: 0) + (profile.stats["sorter"]?.played ?: 0)
             val logicPlayed = (profile.stats["puzzle"]?.played ?: 0) + (profile.stats["maze"]?.played ?: 0) +
@@ -182,9 +188,41 @@ fun ParentsDashboardScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Phonics & Early Reading Progress Card
+            Card(
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFFFEF3C7)),
+                border = androidx.compose.foundation.BorderStroke(1.5.dp, Color(0xFFFDE68A)),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text("🔤", fontSize = 32.sp)
+                    Column {
+                        Text(
+                            text = "تقرير Jolly Phonics ومخارج الحروف",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            color = Color(0xFF92400E)
+                        )
+                        Text(
+                            text = "تم لعب أنشطة الأصوات والدمج $phonicsPlayed مرة بنجاح! طفلك يطور وعياً صوتياً ممتازاً بالحروف الإنجليزية والعربية.",
+                            fontSize = 11.sp,
+                            color = Color(0xFFB45309),
+                            lineHeight = 16.sp
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
             Text("تفاصيل نشاط الطفل", fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color(0xFF334155))
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             if (profile.stats.isEmpty()) {
                 Box(

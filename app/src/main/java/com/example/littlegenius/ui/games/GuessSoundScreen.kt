@@ -55,7 +55,8 @@ val GUESS_SOUND_LEVELS = listOf(
             MysterySound("البقرة", "🐮", R.raw.cow, listOf("الحصان" to "🐴", "الماعز" to "🐐")),
             MysterySound("الخروف", "🐑", R.raw.sheep, listOf("الديك" to "🐔", "القطة" to "🐱")),
             MysterySound("البطة", "🦆", R.raw.duck, listOf("العصفور" to "🐦", "الديك" to "🐔")),
-            MysterySound("الديك", "🐔", R.raw.rooster, listOf("البطة" to "🦆", "البقرة" to "🐮"))
+            MysterySound("الديك", "🐔", R.raw.rooster, listOf("البطة" to "🦆", "البقرة" to "🐮")),
+            MysterySound("الديك الرومي", "🦃", R.raw.turkey, listOf("الديك" to "🐔", "البطة" to "🦆"))
         )
     ),
     GuessSoundLevel(
@@ -78,7 +79,8 @@ val GUESS_SOUND_LEVELS = listOf(
             MysterySound("البومة", "🦉", R.raw.owl, listOf("العصفور" to "🐦", "الذئب" to "🐺")),
             MysterySound("النحلة", "🐝", R.raw.bee, listOf("الضفدع" to "🐸", "العصفور" to "🐦")),
             MysterySound("الماعز", "🐐", R.raw.goat, listOf("الخروف" to "🐑", "البقرة" to "🐮")),
-            MysterySound("الدلفين", "🐬", R.raw.dolphin, listOf("الضفدع" to "🐸", "البطة" to "🦆"))
+            MysterySound("الدلفين", "🐬", R.raw.dolphin, listOf("الضفدع" to "🐸", "البطة" to "🦆")),
+            MysterySound("الفأر", "🐭", R.raw.mouse, listOf("القطة" to "🐱", "العصفور" to "🐦"))
         )
     ),
     GuessSoundLevel(
@@ -86,6 +88,7 @@ val GUESS_SOUND_LEVELS = listOf(
         "التحدي الكبير 🏆",
         listOf(
             MysterySound("الأسد", "🦁", R.raw.lion, listOf("الذئب" to "🐺", "الفيل" to "🐘")),
+            MysterySound("الديك الرومي", "🦃", R.raw.turkey, listOf("الديك" to "🐔", "البومة" to "🦉")),
             MysterySound("الحصان", "🐴", R.raw.horse, listOf("الماعز" to "🐐", "الكلب" to "🐶")),
             MysterySound("الفيل", "🐘", R.raw.elephant, listOf("البقرة" to "🐮", "الأسد" to "🦁")),
             MysterySound("القرد", "🐵", R.raw.monkey, listOf("القطة" to "🐱", "العصفور" to "🐦")),

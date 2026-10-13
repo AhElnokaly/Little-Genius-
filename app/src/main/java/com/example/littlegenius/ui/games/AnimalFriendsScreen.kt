@@ -67,6 +67,7 @@ fun AnimalFriendsScreen(
     onPlayAnimal: (AnimalInfo) -> Unit
 ) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+        val coroutineScope = rememberCoroutineScope()
         val tappedAnimals = remember { mutableStateListOf<String>() }
         var activePlayingAnimalId by remember { mutableStateOf<String?>(null) }
 
@@ -106,6 +107,12 @@ fun AnimalFriendsScreen(
                         onClick = {
                             activePlayingAnimalId = animal.id
                             onPlayAnimal(animal)
+                            coroutineScope.launch {
+                                delay(1800)
+                                if (activePlayingAnimalId == animal.id) {
+                                    activePlayingAnimalId = null
+                                }
+                            }
                             if (!tappedAnimals.contains(animal.id)) {
                                 tappedAnimals.add(animal.id)
                                 if (tappedAnimals.size % 4 == 0) {
