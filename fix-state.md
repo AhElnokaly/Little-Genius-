@@ -21,3 +21,4 @@
 | 18 | Implement Phonics Sound Hunt Listening Quiz (صائد الأصوات) | done | PASS | Audio listening quiz with pulsing speaker, Arabic & English phonics questions, 3 options with immediate feedback and celebratory progression |
 | 19 | Implement Guided Letter Tracing Game (سبورة تتبع الحروف المضيئة) | done | PASS | Night chalkboard canvas with neon glowing trails, pulsing star starting point, dot-guided stroke paths, and fireworks celebration on completion |
 | 20 | Upgrade Parents Dashboard with Phonics Progress & fix launcher icon mipmaps | done | PASS | Dedicated Jolly Phonics mastery card, updated game names in stats, and regenerated all clean mipmap PNG icons fixing AAPT release builds |
+| 21 | Fix GitHub Actions CI Gradle Wrapper validation in build-apk.yml | done | PASS | Added validate-wrappers: false to setup-gradle@v4 and verified local wrapper jar integrity |
